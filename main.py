@@ -66,12 +66,13 @@ async def on_command_error(ctx, error):
 
 @client.event
 async def on_member_join(member):
+    channel = client.get_channel(<Welcome Room ID>)
     user_embed = discord.Embed(
         colour = (discord.Colour.magenta()),
         title = ':partying_face: Welcome :partying_face:',
         description = f'{member.mention} Welcome to **{member.guild.name}** Server !!'
     )
-    await member.send(embed=user_embed)
+    await channel.send(embed=user_embed)
 
 @client.event
 async def on_guild_join(guild):
