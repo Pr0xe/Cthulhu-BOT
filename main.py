@@ -66,7 +66,7 @@ async def on_command_error(ctx, error):
 
 @client.event
 async def on_member_join(member):
-    channel = client.get_channel(<Welcome Room ID>)
+    channel = client.get_channel(784492565239037973)
     user_embed = discord.Embed(
         colour = (discord.Colour.magenta()),
         title = ':partying_face: Welcome :partying_face:',
