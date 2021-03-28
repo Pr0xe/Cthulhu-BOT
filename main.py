@@ -3,8 +3,10 @@ import json
 import asyncio
 import asyncpg
 import tracemalloc
+import os
 from discord.ext import commands
 from threading import Thread
+from termcolor import colored
 
 tracemalloc.start()
 with open("settings/token.json") as tok:
@@ -90,28 +92,13 @@ async def on_guild_remove(guild):
     with open('settings/prefixes.json','w') as f:
         json.dump(prefixes, f, indent=4)
 
-extensions = [
-    'cogs.advanced',
-    'cogs.bankick',
-    'cogs.bot_info',
-    'cogs.clear',
-    'cogs.help',
-    'cogs.level',
-    'cogs.mute',
-    'cogs.poll',
-    'cogs.reddit',
-    'cogs.report',
-    'cogs.roles',
-    'cogs.prefix',
-    'cogs.server_info',
-    'cogs.unmute',
-    'cogs.user_info'
-]
-
 if __name__ == '__main__':
-    for ext in extensions:
-        client.load_extension(ext)
-    print("All cogs LOADED!")
+    for file in os.listdir('cogs'):
+        if file.endswith('.py'):
+            client.load_extension(f'cogs.{file[:-3]}')
+            print(colored(f"{file} LOADED!",'green'))
+
+
 client.loop.run_until_complete(create_db_pool())
 loop = asyncio.get_event_loop()
 loop.create_task(client.run(tokens["token"]))
