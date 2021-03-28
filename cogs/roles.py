@@ -21,9 +21,7 @@ class Roles(commands.Cog):
                     discord.Color.gold(),
                     discord.Color.dark_gold(),
                     discord.Color.orange(),
-                    discord.Color.dark_orange(),
-                    discord.Color.red(),
-                    discord.Color.dark_red()]
+                    discord.Color.dark_orange()]
     
     @commands.command(pass_context = True, aliases=['crole'])
     @has_permissions(manage_roles=True)
