@@ -15,7 +15,6 @@ class Report(commands.Cog):
         self.client = client
 
     @commands.command(pass_context = True, aliases=['rep'])
-    @commands.has_permissions(kick_members=True, ban_members=True)
     async def report(self, ctx, user: discord.Member, *reason:str):
         warn_embed = discord.Embed(
         title=":warning: User Report :warning:",
@@ -38,22 +37,30 @@ class Report(commands.Cog):
             
         warn_embed.add_field(name="Report Committed", value=f"{ctx.message.author.mention} reported the user {user.mention}", inline=False)
         warn_embed.add_field(name="Reason", value=reason, inline=False)
-        await ctx.send(embed=warn_embed)
+        channel = self.client.get_channel(802344348825157632)
+        await channel.send(embed=warn_embed)
         print("report committed")
     
     @commands.command(pass_context = True)
     async def reports(self, ctx, user:discord.Member):
+        token = False
         for current_user in report['users']:
             if user.name == current_user['name']:
                 total = len(current_user['reasons'])
-                if total != 0:
+                if total > 0:
                     await ctx.send(f"**{user.mention}** has been reported {total} times")
+                    token = True
                     break
                 else:
                     await ctx.send(f"**{user.name}** has never been reported")
+                    return
+        if token == False:
+            await ctx.send(f"**{user.name}** has never been reported")
+            return
+        
     
     @commands.command(pass_context = True, aliases=['drep'])
-    @commands.has_permissions(kick_members=True, ban_members=True)
+    @commands.has_permissions(kick_members=True)
     async def dreport(self, ctx, user:discord.Member):
         for current_user in report['users']:
             if current_user['name'] == user.name:
@@ -79,12 +86,7 @@ class Report(commands.Cog):
 
     @report.error
     async def report_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
-            print("Permission Dennied to Report")
-
-        elif isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
             await ctx.send(embed=embed)
             print("Argument missing for reports")
