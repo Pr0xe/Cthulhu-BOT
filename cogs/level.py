@@ -34,8 +34,9 @@ class Levels(commands.Cog):
         await self.client.pg_con.execute("UPDATE users SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
         
         if await self.level_up(user):
+            channel = self.client.get_channel(801793881267896341)
             embed=discord.Embed(title=" :arrow_up: Level Up :arrow_up: ", description="**{0}** is now level **{1}**!".format(message.author.mention, user['level'] + 1), color=0x00ffff)
-            await message.channel.send(embed=embed)
+            await channel.send(embed=embed)
             print(f"{message.author} level up ")
         
     @commands.command(pass_context = True)
@@ -57,6 +58,24 @@ class Levels(commands.Cog):
             embed.add_field(name="Total XP", value=user[0]['xp'])
             embed.add_field(name="XP to next Level", value=((round((4 * (user[0]['level'] ** 3)) / 5)) - (user[0]['xp'])), inline=False)
             await ctx.send(embed=embed)
-
+    @commands.command(pass_context = "True")
+    @commands.has_permissions(ban_members=True)
+    async def rmlevel(self, ctx, member: discord.Member):
+        if not member:
+            await ctx.send(f"{ctx.message.author.mention} Please specify user")
+            return
+        else:
+            member_id = str(member.id)
+            await self.client.pg_con.execute("DELETE FROM users WHERE user_id = $1", member_id)
+            await ctx.send(f"{member.mention} level cleared")
+            print("removed level from $1 user", member)
+    
+    @rmlevel.error
+    async def rmlevel_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
+            await ctx.send(embed=embed)
+            print("Permission Dennied to remove Report")    
+        
 def setup(client):
     client.add_cog(Levels(client))
