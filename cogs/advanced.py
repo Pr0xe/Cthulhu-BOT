@@ -25,6 +25,7 @@ class Advanced(commands.Cog):
             ("```unban <username#number> <reason>```", 'Unban user to join again the server', False),
             ("```mute <@member> <reason>```", 'Server voice mute a user', False),
             ("```unmute <@member> <reason>```", 'Voice unmute the user', False),
+            ("```rmlevel <@member>```", 'Remove level from user', False),
             ("```role <@role> <@member>```", 'Add role to a member', False),
             ("```rmrole <@role> <@member>```", 'Remove role from member', False),
             ("```crole <rolename> ```", 'Create new role in Server', False),
