@@ -77,6 +77,17 @@ async def on_member_join(member):
     await channel.send(embed=user_embed)
 
 @client.event
+async def on_member_remove(member):
+    channel = client.get_channel(825767793102291024)
+    bye_embed = discord.Embed(
+        color=0x737373,
+        title = ':cross: Goodbye :cross:',
+        description = f'{member} has left from the server!!'
+    )
+    await channel.send(embed=bye_embed)
+
+
+@client.event
 async def on_guild_join(guild):
     with open('settings/prefixes.json','r') as f:
         prefixes = json.load(f)
