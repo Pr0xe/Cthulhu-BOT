@@ -58,6 +58,7 @@ class Levels(commands.Cog):
             embed.add_field(name="Total XP", value=user[0]['xp'])
             embed.add_field(name="XP to next Level", value=((round((4 * (user[0]['level'] ** 3)) / 5)) - (user[0]['xp'])), inline=False)
             await ctx.send(embed=embed)
+    
     @commands.command(pass_context = "True")
     @commands.has_permissions(ban_members=True)
     async def rmlevel(self, ctx, member: discord.Member):
