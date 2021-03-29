@@ -42,11 +42,11 @@ async def on_ready():
 async def on_message(msg):
     if not msg.author.bot:
         try:
-            if msg.mentions[0] == client.user:
+            if client.user.mentioned_in(msg):
                 with open("settings/prefixes.json", 'r') as f:
                     prefixes = json.load(f)    
                 pre = prefixes[str(msg.guild.id)]
-                await msg.channel.send(f"Find Information there `{pre}help`")
+            await msg.channel.send(f"Find Information there `{pre}help`")
         except:
             pass
         #password remain
