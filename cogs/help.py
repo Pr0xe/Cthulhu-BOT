@@ -23,7 +23,6 @@ class Help(commands.Cog):
                     ("```who```", 'Fetch User Informations', False),
                     ("```level```", 'Check out your level in server', False),
                     ("```poll <question>```", 'Ask a question, YES or NO', False),
-                    ("```clear <amount>```", 'Clear the amount of messages you want', False),
                     ("```memes```", 'Memes from reddit', False),
                 ]
         

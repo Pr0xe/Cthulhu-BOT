@@ -20,6 +20,7 @@ class Advanced(commands.Cog):
         fields_mod = [
             ("Prefix for this server", f"prefix: `{pre}`", False),
             ("```cprefix <prefix>```", 'Change the prefix :no_entry: Admins ONLY :no_entry:', False),
+            ("```clear <amount>```", 'Clear the amount of messages you want', False),
             ("```ban <@member> <reason>```", 'BAN user from the server', False),
             ("```kick <@member> <reason>```", 'Kick user from the server', False),
             ("```unban <username#number> <reason>```", 'Unban user to join again the server', False),
