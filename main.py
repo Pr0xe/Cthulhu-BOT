@@ -28,7 +28,7 @@ with open("settings/pass.json") as password:
 async def create_db_pool():
     try:
         client.pg_con = await asyncpg.create_pool(database="discordbot", user="pr0xe", password=PASS["password"])
-        print("Database opened successfully")
+        print(colored("Database opened successfully",'cyan'))
     except:
         print("Unable to connect")   
 
