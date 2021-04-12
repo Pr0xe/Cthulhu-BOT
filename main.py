@@ -75,6 +75,10 @@ async def on_member_join(member):
         description = f'{member.mention} Welcome to **{member.guild.name}** Server !!'
     )
     await channel.send(embed=user_embed)
+    #add role when join
+    role = discord.utils.get(member.guild.roles, id=831109657094520843)
+    await member.add_roles(role)
+    print(f"{role} role added to {member}")
 
 @client.event
 async def on_member_remove(member):
@@ -85,6 +89,7 @@ async def on_member_remove(member):
         description = f'{member} has left from the server!!'
     )
     await channel.send(embed=bye_embed)
+    print(f"{member} has left the server")
 
 
 @client.event
