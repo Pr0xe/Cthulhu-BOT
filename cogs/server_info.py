@@ -39,6 +39,6 @@ class ServerInfo(commands.Cog):
             embed.add_field(name=name, value=value, inline=inline)
 
         await ctx.send(embed=embed)
-        print("Server Infos are DONE")
+        print(f"Server Infos are DONE : requested by {ctx.author}")
 def setup(client):
     client.add_cog(ServerInfo(client))
