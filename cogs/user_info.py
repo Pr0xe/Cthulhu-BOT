@@ -27,7 +27,7 @@ class User_info(commands.Cog):
             em_user.add_field(name=name, value=value)
 
         await ctx.send(embed=em_user)
-        print("User Infos are DONE")
+        print(f"Informations about {member} printed: requested by {ctx.author}")
 
 def setup(client):
     client.add_cog(User_info(client))
