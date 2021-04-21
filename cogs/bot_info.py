@@ -14,10 +14,11 @@ class BotInfo(commands.Cog):
     async def bot(self, ctx):
         embed = discord.Embed(
         title="BOT information",
-        colour=0x1167B1)
-        python_p = ["Python", platform.python_version() ]
+        colour=0x1167B1,
+        timestamp=ctx.message.created_at)
+        python_p = ["Python", platform.python_version()]
         embed.set_author(name="Cthulhu ", icon_url="https://cdn.discordapp.com/app-icons/766607810943123466/97bc49d97193d6de74c7a8f9b3a1c8ef.png?size=256")
-        embed.set_image(url="https://cdn.discordapp.com/app-icons/766607810943123466/97bc49d97193d6de74c7a8f9b3a1c8ef.png?size=256")
+        embed.set_footer(text=f"Requested by {ctx.author}")
         fields = [  ("Bot Developer", pr0xe_id, False),
                     ("Programming Language", f"{python_p[0]}  {python_p[1]}",True ),
                     ("Server counter", len(self.client.guilds),True),
@@ -27,6 +28,6 @@ class BotInfo(commands.Cog):
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)           
         await ctx.send(embed=embed)
-        print("BOT Infos are DONE")
+        print(f"BOT Infos are DONE : requested by {ctx.author}")
 def setup(client):
     client.add_cog(BotInfo(client))

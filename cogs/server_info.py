@@ -10,14 +10,12 @@ class ServerInfo(commands.Cog):
     @commands.command(pass_context=True, name="Server Info", aliases=['server'])
     async def server(self, ctx):
         embed = discord.Embed(
-        title="Server information",
-        colour=0xFFA500)
+        title="Server informations",
+        colour=0xFFA500,
+        timestamp=ctx.message.created_at)
+        embed.set_footer(text=f"Requested by {ctx.author}")
         guild = ctx.guild
         owner = guild.owner_id
-        with open("settings/prefixes.json", 'r') as f:
-                prefixes = json.load(f)    
-        pre = prefixes[str(ctx.guild.id)]
-        embed.add_field(name=f"Prefix for this server is `{pre}`", value='Not recommended to change it', inline=False)
         statuses = [len(list(filter(lambda m: str(m.status) == "online",guild.members))),
                     len(list(filter(lambda m: str(m.status) == "idle",guild.members))),
                     len(list(filter(lambda m: str(m.status) == "dnd",guild.members))),
