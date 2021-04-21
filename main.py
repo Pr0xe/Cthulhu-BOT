@@ -15,7 +15,7 @@ with open(os.path.join(parent_dir,"settings/token.json")) as tok:
     tokens = json.load(tok)
 
 async def get_prefix(client, message):
-    with open(os.path.join(parent_dir,"/settings/prefixes.json", 'r')) as f:
+    with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
         prefixes = json.load(f)
     return prefixes[str(message.guild.id)]
 
@@ -45,7 +45,7 @@ async def on_message(msg):
     if not msg.author.bot:
         try:
             if client.user.mentioned_in(msg):
-                with open(os.path.join(parent_dir,"/settings/prefixes.json", 'r')) as f:
+                with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
                     prefixes = json.load(f)    
                 pre = prefixes[str(msg.guild.id)]
             await msg.channel.send(f"Find Information there `{pre}help`")
@@ -96,18 +96,18 @@ async def on_member_remove(member):
 
 @client.event
 async def on_guild_join(guild):
-    with open(os.path.join(parent_dir,"/settings/prefixes.json", 'r')) as f:
+    with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
         prefixes = json.load(f)
     prefixes[str(guild.id)] = 'cl.'
-    with open(os.path.join(parent_dir,"/settings/prefixes.json",'w')) as f:
+    with open(os.path.join(parent_dir,"settings/prefixes.json"),'w') as f:
         json.dump(prefixes, f, indent=4)
 
 @client.event
 async def on_guild_remove(guild):
-    with open(os.path.join(parent_dir,"/settings/prefixes.json", 'r')) as f:
+    with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
         prefixes = json.load(f)
     prefixes.pop(str(guild.id))
-    with open(os.path.join(parent_dir,"/settings/prefixes.json",'w')) as f:
+    with open(os.path.join(parent_dir,"settings/prefixes.json"),'w') as f:
         json.dump(prefixes, f, indent=4)
 
 if __name__ == '__main__':
