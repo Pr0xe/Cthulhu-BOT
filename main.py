@@ -2,17 +2,13 @@ import discord
 import json
 import asyncio
 import asyncpg
-import tracemalloc
 import os
 from discord.ext import commands
-from threading import Thread
 from termcolor import colored
-
-tracemalloc.start()
 
 parent_dir = "/home/pr0xe/Cthulhu-BOT/"
 with open(os.path.join(parent_dir,"settings/token.json")) as tok:
-    tokens = json.load(tok)
+    token = json.load(tok)
 
 async def get_prefix(client, message):
     with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
@@ -116,8 +112,5 @@ if __name__ == '__main__':
             client.load_extension(f'cogs.{file[:-3]}')
             print(colored(f"{file} LOADED!",'green'))
 
-
 client.loop.run_until_complete(create_db_pool())
-loop = asyncio.get_event_loop()
-loop.create_task(client.run(tokens["token"]))
-Thread(target=loop.run_forever())
+client.run(token["token"])
