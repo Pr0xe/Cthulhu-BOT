@@ -95,7 +95,13 @@ class Report(commands.Cog):
             drep_embed.add_field(name="Reports History", value=f"{member.mention} Has **{str(total_reports)}** reports in history", inline=False)
             await ctx.send(embed=drep_embed)
             return
-
+    
+    @reports.error
+    async def reports_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embed=discord.Embed(title="Missing User", description=f"{ctx.message.author.mention} Specify the user!", color=0xff00f6)
+            await ctx.send(embed=embed)
+            print("Specify the user abour report history")
 
 def setup(client):
     client.add_cog(Report(client))                
