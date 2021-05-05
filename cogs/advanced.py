@@ -7,7 +7,7 @@ class Advanced(commands.Cog):
     def __init__(self,client):
         self.client = client
     @commands.command(pass_context = True)
-    @commands.has_permissions(kick_members=True,ban_members=True)
+    @commands.has_permissions(kick_members=True)
     async def advanced(self, ctx):
         with open("settings/prefixes.json", 'r') as f:
                 prefixes = json.load(f)    
@@ -42,6 +42,8 @@ class Advanced(commands.Cog):
             embed_mod.add_field(name=name, value=value, inline=inline)
         embed_mod.set_footer(text="Contact with Administrators for more help")
         await ctx.send(embed=embed_mod)
+        print(f"Advanced commands printed : requested by {ctx.author}")
+        
     @advanced.error
     async def advanced_error(self, ctx ,error):
         if isinstance(error, commands.MissingPermissions):
