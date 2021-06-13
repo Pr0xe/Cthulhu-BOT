@@ -10,10 +10,9 @@ class Report(commands.Cog):
     @commands.command(pass_context = True, aliases=['rep'])
     async def report(self, ctx, member: discord.Member, *reason:str):
         warn_embed = discord.Embed(
-        title=":warning: User Report :warning:",
+        title=":warning: Report Submitted :warning:",
         colour=0xFF0000)
         warn_user = discord.Embed(
-            title=":white_check_mark: User Report :white_check_mark:",
             colour=0x40E0D0)
         if not reason:
             await ctx.send(f"{ctx.message.author.mention} Please provide a reason!")
@@ -23,17 +22,19 @@ class Report(commands.Cog):
         user = await self.client.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
         if not user:
             await self.client.pg_con.execute("INSERT INTO reports (user_id, report) VALUES($1, ARRAY[$2])", member_id, reason)
-            warn_user.add_field(name="Report Committed", value=f"{ctx.message.author.mention} report for the user {member.mention} commited", inline=False)
+            warn_user.add_field(name=":white_check_mark: Report Submitted :white_check_mark:", value=f"Thank for your report!", inline=False)
+            warn_user.set_footer(text=f"Requested by {ctx.author}")
             await ctx.send(embed=warn_user)
             print("report committed")
         else:
             await self.client.pg_con.execute("UPDATE reports SET report = array_append(report, $1) WHERE user_id = $2", reason, member_id)
-            warn_user.add_field(name="Report Committed", value=f"{ctx.message.author.mention} report for the user {member.mention} commited", inline=False)
+            warn_user.add_field(name=":white_check_mark: Report Submitted :white_check_mark:", value=f"Thank for your report!", inline=False)
+            warn_user.set_footer(text=f"Requested by {ctx.author}")
             await ctx.send(embed=warn_user)
             print("report committed")
         
         channel = self.client.get_channel(802344348825157632)
-        warn_embed.add_field(name="Report Committed", value=f"{ctx.message.author.mention} reported the user {member.mention}", inline=False)
+        warn_embed.add_field(name="Report Status", value=f"{ctx.message.author.mention} reported the user {member.mention}", inline=False)
         warn_embed.add_field(name="Reason", value=reason, inline=False)
         await channel.send(embed=warn_embed)
         
