@@ -10,7 +10,7 @@ class Mute(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, member: discord.Member, *, reason=None):
         await member.edit(mute=True)
-        embed=discord.Embed(title=" :mute: User Muted! :mute: ", description="**{0}** is mute by **{1}**!".format(member.mention, ctx.message.author.mention), color=0xff00f6)
+        embed=discord.Embed(title=" :mute: User Muted! :mute: ", description="**{0}** is  server muted by **{1}**!".format(member.mention, ctx.message.author.mention), color=0xff00f6)
         embed.add_field(name="Reason", value=reason, inline=False)
         await ctx.send(embed=embed)
         print(f"user : {member} is voice muted by {ctx.author}")
@@ -28,10 +28,9 @@ class Mute(commands.Cog):
             
     @commands.command(pass_context = True)
     @commands.has_permissions(manage_roles=True)
-    async def unmute(self, ctx, member: discord.Member, *, reason=None):
+    async def unmute(self, ctx, member: discord.Member):
         await member.edit(mute=False)
-        embed=discord.Embed(title=" :sound: User Unmuted! :sound:", description="**{0}** is now Unmuted!".format(member.mention), color=0xff00f6)
-        embed.add_field(name="Reason", value=reason, inline=False)
+        embed=discord.Embed(title=" :sound: User Unmuted! :sound:", description="**{0}** is Server Unmuted!".format(member.mention), color=0xff00f6)
         await ctx.send(embed=embed)
         print(f"user : {member} is now unmuted by {ctx.author}")
     
