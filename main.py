@@ -37,25 +37,6 @@ async def on_ready():
     await client.change_presence(activity=discord.Game(name="@mention me for help"))
 
 @client.event
-async def on_message(msg):
-    if not msg.author.bot:
-        try:
-            if client.user.mentioned_in(msg):
-                with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
-                    prefixes = json.load(f)    
-                pre = prefixes[str(msg.guild.id)]
-            await msg.channel.send(f"Find Information there `{pre}help`")
-        except:
-            pass
-        #password remain
-        try:
-            if msg.content.startswith('password' or 'pass'):
-                await msg.channel.send(f"{msg.author.mention} Don't say passwords!!")
-        except:
-            pass
-        await client.process_commands(msg)
-
-@client.event
 async def on_command_error(ctx, error):
     try:
         if isinstance(error, commands.CommandNotFound):
