@@ -34,7 +34,7 @@ async def create_db_pool():
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
-    await client.change_presence(activity=discord.Game(name="@mention me for help"))
+    await client.change_presence(activity=discord.Game(name="cl.help"))
 
 @client.event
 async def on_command_error(ctx, error):
