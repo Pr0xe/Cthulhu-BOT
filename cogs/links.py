@@ -10,14 +10,16 @@ class Links(commands.Cog):
     async def on_message(self, message):
         if message.author == self.client.user:
             return
-        channel = self.client.get_channel(762248895580733442)
+        admin_channel = self.client.get_channel(762248895580733442)
         
-        if ('http' or 'https' in message.content) and (message.channel == channel):
-            embed=discord.Embed(title=":warning: Message Deleted :warning:", description=f"{message.author.mention} Links not allowed in this channel", color=0xff00f6)
-            await channel.purge(limit=1)
-            await channel.send(embed=embed)
-            print(f"{message.author} posted a link, message deleted")
-            return
+        links = ['http', 'https']
+        for text in links:
+            if ( text in message.content) and (message.channel == admin_channel):
+                embed=discord.Embed(title=":warning: Message Deleted :warning:", description=f"{message.author.mention} Links not allowed in this channel", color=0xff00f6)
+                await admin_channel.purge(limit=1)
+                await admin_channel.send(embed=embed)
+                print(f"{message.author} posted a link, message deleted")
+                return
 
 def setup(client):
     client.add_cog(Links(client))
