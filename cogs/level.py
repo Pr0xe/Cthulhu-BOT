@@ -12,7 +12,7 @@ class Levels(commands.Cog):
         cur_level = user['level']
 
         if cur_xp >= round((4 * (cur_level ** 3)) / 5):
-            await self.client.pg_con.execute("UPDATE users SET level = $1 WHERE user_id = $2 AND guild_id = $3", cur_level + 1, user['user_id'], user['guild_id'])
+            await self.client.pg_con.execute("UPDATE levels SET level = $1 WHERE user_id = $2 AND guild_id = $3", cur_level + 1, user['user_id'], user['guild_id'])
             return True
         else:
             return False
@@ -25,13 +25,13 @@ class Levels(commands.Cog):
         author_id = str(message.author.id)
         guild_id = str(message.guild.id)
         
-        user = await self.client.pg_con.fetch("SELECT * FROM users WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
+        user = await self.client.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
         
         if not user:
-            await self.client.pg_con.execute("INSERT INTO users (user_id, guild_id, level, xp) VALUES ($1, $2, 1, 0)", author_id, guild_id)
+            await self.client.pg_con.execute("INSERT INTO levels (user_id, guild_id, level, xp) VALUES ($1, $2, 1, 0)", author_id, guild_id)
 
-        user = await self.client.pg_con.fetchrow("SELECT * FROM users WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
-        await self.client.pg_con.execute("UPDATE users SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
+        user = await self.client.pg_con.fetchrow("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
+        await self.client.pg_con.execute("UPDATE levels SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
         
         if await self.level_up(user):
             channel = self.client.get_channel(801793881267896341)
@@ -46,7 +46,7 @@ class Levels(commands.Cog):
         member_id = str(member.id)
         guild_id = str(ctx.guild.id)
 
-        user = await self.client.pg_con.fetch("SELECT * FROM users WHERE user_id = $1 AND guild_id = $2", member_id, guild_id)
+        user = await self.client.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", member_id, guild_id)
 
         if not user:
             await ctx.send(f"{member.mention} doesn't have level")
@@ -67,7 +67,7 @@ class Levels(commands.Cog):
             return
         else:
             member_id = str(member.id)
-            await self.client.pg_con.execute("DELETE FROM users WHERE user_id = $1", member_id)
+            await self.client.pg_con.execute("DELETE FROM levels WHERE user_id = $1", member_id)
             await ctx.send(f"{member.mention} level cleared")
             print("removed level from $1 user", member)
     
