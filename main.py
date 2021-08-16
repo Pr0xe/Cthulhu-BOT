@@ -1,6 +1,5 @@
 import discord
 import json
-import asyncio
 import asyncpg
 import os
 from discord.ext import commands
@@ -33,7 +32,7 @@ async def create_db_pool():
 
 @client.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    print(colored(f'{client.user} has connected to Discord!', 'cyan'))
     await client.change_presence(activity=discord.Game(name="cl.help"))
 
 @client.event
