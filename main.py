@@ -69,7 +69,6 @@ async def on_member_remove(member):
     await channel.send(embed=bye_embed)
     print(f"{member} has left the server")
 
-
 @client.event
 async def on_guild_join(guild):
     with open(os.path.join(parent_dir,"settings/prefixes.json"), 'r') as f:
