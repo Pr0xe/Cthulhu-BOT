@@ -9,6 +9,7 @@ class ServerInfo(commands.Cog):
 
     @commands.command(pass_context=True, name="Server Info", aliases=['server'])
     async def server(self, ctx):
+        log_channel = self.client.get_channel(900492686581178398)
         embed = discord.Embed(
         title="Server informations",
         colour=0xFFA500,
@@ -35,8 +36,7 @@ class ServerInfo(commands.Cog):
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
-
         await ctx.send(embed=embed)
-        print(f"Server Infos are DONE : requested by {ctx.author}")
+        await log_channel.send(f"Server informations printed : requested by {ctx.author.mention}")
 def setup(client):
     client.add_cog(ServerInfo(client))
