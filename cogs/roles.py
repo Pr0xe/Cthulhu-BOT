@@ -36,7 +36,7 @@ class Roles(commands.Cog):
             await guild.create_role(name=_role, colour=random.choice(self.colors))
             embed=discord.Embed(title="Role Created", description=f"{ctx.message.author.mention} created `{_role}` role", color=0xff00f6)
             await ctx.send(embed=embed)
-            await log_channel.send(f"{ctx.message.author.mention} created `{_role}` role")
+            await log_channel.send(f"{ctx.message.author} created `{_role}` role")
 
     @create_role.error
     async def crole_error(self, ctx ,error):
@@ -58,7 +58,7 @@ class Roles(commands.Cog):
             await role.delete()
             embed=discord.Embed(title="Remove role", description=f"{ctx.message.author.mention} Successfully removed `{role}` role from server", color=0xff00f6)
             await ctx.send(embed=embed)
-            await log_channel.send(f"{ctx.message.author.mention} Successfully removed `{role}` role from server")
+            await log_channel.send(f"{ctx.message.author} Successfully removed `{role}` role from server")
     
     @drole.error
     async def drole_error(self, ctx, error):
@@ -77,7 +77,7 @@ class Roles(commands.Cog):
             await user.add_roles(role)
             embed=discord.Embed(title="Add Role", description=f"{ctx.message.author.mention} Successfully given {role.mention} role to {user.mention}", color=0xff00f6)
             await ctx.send(embed=embed)
-            await log_channel.send(f"{ctx.message.author.mention} changed role to {user.mention}")
+            await log_channel.send(f"{ctx.message.author} changed role to {user}")
     
     #ERROR HANDLING 
     @addrole.error

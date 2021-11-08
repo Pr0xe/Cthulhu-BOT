@@ -7,6 +7,7 @@ class User_info(commands.Cog):
         self.client = client
     @commands.command(pass_context=True, aliases=['whoami','who'])
     async def user_info(self, ctx, member: discord.Member = None):
+        log_channel = self.client.get_channel(900492686581178398)
         if not member:
             member = ctx.message.author
         roles = [role for role in member.roles[1:]]
@@ -27,7 +28,7 @@ class User_info(commands.Cog):
             em_user.add_field(name=name, value=value)
 
         await ctx.send(embed=em_user)
-        print(f"Informations about {member} printed: requested by {ctx.author}")
+        await log_channel.send(f"Informations about {member} printed: requested by {ctx.author}")
 
 def setup(client):
     client.add_cog(User_info(client))

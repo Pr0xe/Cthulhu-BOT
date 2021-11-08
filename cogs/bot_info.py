@@ -12,6 +12,7 @@ class BotInfo(commands.Cog):
         
     @commands.command(pass_context=True, name="BOT Info",aliases=['bot'])
     async def bot(self, ctx):
+        log_channel = self.client.get_channel(900492686581178398)
         embed = discord.Embed(
         title="BOT information",
         colour=0x1167B1,
@@ -28,6 +29,6 @@ class BotInfo(commands.Cog):
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)           
         await ctx.send(embed=embed)
-        print(f"BOT Infos are DONE : requested by {ctx.author}")
+        await log_channel.send(f"BOT Infos printed : requested by {ctx.author}")
 def setup(client):
     client.add_cog(BotInfo(client))

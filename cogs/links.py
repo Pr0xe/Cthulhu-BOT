@@ -8,6 +8,7 @@ class Links(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
+        log_channel = self.client.get_channel(900492686581178398)
         if message.author == self.client.user:
             return
         admin_channel = self.client.get_channel(762248895580733442)
@@ -18,7 +19,7 @@ class Links(commands.Cog):
                 embed=discord.Embed(title=":warning: Message Deleted :warning:", description=f"{message.author.mention} Links not allowed in this channel", color=0xff00f6)
                 await admin_channel.purge(limit=1)
                 await admin_channel.send(embed=embed)
-                print(f"{message.author} posted a link, message deleted")
+                await log_channel.send(f"{message.author} posted a link, message deleted")
                 return
 
 def setup(client):

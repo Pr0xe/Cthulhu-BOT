@@ -19,7 +19,6 @@ class Poll(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} **Arguments Missing**", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("Missing arguments")
 
 def setup(client):
     client.add_cog(Poll(client))

@@ -40,16 +40,16 @@ class Advanced(commands.Cog):
         ]
         for name, value, inline in fields_mod:
             embed_mod.add_field(name=name, value=value, inline=inline)
+        log_channel = self.client.get_channel(900492686581178398)
         embed_mod.set_footer(text="Contact with Administrators for more help")
         await ctx.send(embed=embed_mod)
-        print(f"Advanced commands printed : requested by {ctx.author}")
+        await log_channel.send(f"Advanced commands printed : requested by {ctx.author}")
         
     @advanced.error
     async def advanced_error(self, ctx ,error):
         if isinstance(error, commands.MissingPermissions):
             embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} No permission to use this command.", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("Permission Dennied to advance command")
 
 def setup(client):
     client.add_cog(Advanced(client))

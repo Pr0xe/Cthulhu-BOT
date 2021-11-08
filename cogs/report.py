@@ -9,6 +9,7 @@ class Report(commands.Cog):
 
     @commands.command(pass_context = True, aliases=['rep'])
     async def report(self, ctx, member: discord.Member, *reason:str):
+        log_channel = self.client.get_channel(900492686581178398)
         warn_embed = discord.Embed(
         title=":warning: Report Submitted :warning:",
         colour=0xFF0000)
@@ -25,13 +26,11 @@ class Report(commands.Cog):
             warn_user.add_field(name=":white_check_mark: Report Submitted :white_check_mark:", value=f"Thank for your report!", inline=False)
             warn_user.set_footer(text=f"Requested by {ctx.author}")
             await ctx.send(embed=warn_user)
-            print("report committed")
         else:
             await self.client.pg_con.execute("UPDATE reports SET report = array_append(report, $1) WHERE user_id = $2", reason, member_id)
             warn_user.add_field(name=":white_check_mark: Report Submitted :white_check_mark:", value=f"Thank for your report!", inline=False)
             warn_user.set_footer(text=f"Requested by {ctx.author}")
             await ctx.send(embed=warn_user)
-            print("report committed")
         
         channel = self.client.get_channel(802344348825157632)
         warn_embed.add_field(name="Report Status", value=f"{ctx.message.author.mention} reported the user {member.mention}", inline=False)
@@ -43,7 +42,6 @@ class Report(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("Argument missing for reports")
     
     @commands.command(pass_context = True, aliases=['drep'])
     @commands.has_permissions(kick_members=True)
@@ -63,20 +61,17 @@ class Report(commands.Cog):
                 colour=0xFFFFFF)
             member_id = str(member.id)
             await self.client.pg_con.execute("DELETE FROM reports WHERE user_id = $1", member_id)
-            drep_embed.add_field(name="Report Cleared", value=f"{ctx.message.author.mention} removed reports from {member.mention}", inline=False)
+            drep_embed.add_field(name="Reports Cleared", value=f"{ctx.message.author.mention} removed reports from {member.mention}", inline=False)
             await ctx.send(embed=drep_embed)
-            print("removed reports from user {0}".format(member))
        
     @dreport.error
     async def dreport_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("Permission Dennied to remove Report")
         elif isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Missing User", description=f"{ctx.message.author.mention} Specify the user!", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("Missing argument about dreport")
 
     @commands.command(pass_context = True)
     async def reports(self, ctx, member: discord.Member):
@@ -102,7 +97,6 @@ class Report(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Missing User", description=f"{ctx.message.author.mention} Specify the user!", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("Specify the user abour report history")
 
 def setup(client):
     client.add_cog(Report(client))                
