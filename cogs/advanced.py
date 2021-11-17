@@ -34,6 +34,8 @@ class Advanced(commands.Cog):
             ("```report <@member> <reason>```", 'Report user for a serious reason', False),
             ("```reports <@member>```", 'Report history for the user', False),
             ("```dreport <@member>```", 'Remove reports from the user', False),
+            ("```messages```", 'List deleted messages', False),
+            ("```dmessages```", 'Remove deleted messages', False),
             (":underage: ```nsfw or nsfw <subreddit>``` :underage: ", 'NSFW content from reddit, **default sub is nsfw**', False),
 
 
