@@ -36,20 +36,27 @@ class Links(commands.Cog):
         deleted_embed = discord.Embed(
                 title=":recycle: Deleted messages :recycle:",
                 colour=0xFF0000)     
-        counter = await self.client.pg_con.fetch("SELECT COUNT(*) AS RowCnt FROM deleted_messages")
-        if counter==0:
+        rows = await self.client.pg_con.fetch("SELECT messages FROM deleted_messages")
+        new_list=[]
+        new_list.append(rows)
+        if not rows:
             clear_embed = discord.Embed(
                 title=":recycle: Deleted messages :recycle:",
+                description="Message history is empty",
                 colour=0xFF0000)
             await ctx.send(embed=clear_embed)
             return
         else:
-            rows = await self.client.pg_con.fetch("SELECT messages FROM deleted_messages")
-            new_list=[]
-            new_list.append(rows)
             deleted_embed.add_field(name="Deleted Message History", value=f"{new_list}", inline=False)
             await ctx.send(embed=deleted_embed)
             return
+   
+    @messages.error
+    async def messages_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
+            await ctx.send(embed=embed)
+
     @commands.command(pass_context = True)
     @commands.has_permissions(ban_members=True)
     async def dmessages(self, ctx):
@@ -66,7 +73,11 @@ class Links(commands.Cog):
                 colour=0xFF0000)
             await self.client.pg_con.execute("DELETE FROM deleted_messages")
             await ctx.send(embed=drep_embed)
-
+    @dmessages.error
+    async def messages_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
+            await ctx.send(embed=embed)
 
 def setup(client):
     client.add_cog(Links(client))
