@@ -34,13 +34,14 @@ class Report(commands.Cog):
         
         channel = self.client.get_channel(802344348825157632)
         warn_embed.add_field(name="Report Status", value=f"{ctx.message.author.mention} reported the user {member.mention}", inline=False)
+        await log_channel.send(f"{ctx.message.author.mention} reported the user {member.mention}")
         warn_embed.add_field(name="Reason", value=reason, inline=False)
         await channel.send(embed=warn_embed)
         
     @report.error
     async def report_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
+            embed=discord.Embed(title="Arguments Missing", description=f"{ctx.message.author.mention} Specify the user", color=0xff00f6)
             await ctx.send(embed=embed)
     
     @commands.command(pass_context = True, aliases=['drep'])
@@ -74,6 +75,7 @@ class Report(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(pass_context = True)
+    @commands.has_permissions(ban_members=True)
     async def reports(self, ctx, member: discord.Member):
         drep_embed = discord.Embed(
                 title=":white_circle: Report Status :white_heart:",
@@ -85,10 +87,11 @@ class Report(commands.Cog):
             await ctx.send(embed=drep_embed)
             return
         else:
-            array_len = await self.client.pg_con.fetch("SELECT array_length(report, 1) FROM reports WHERE user_id = $1", member_id)
-            temp_string = str(array_len)
-            total_reports = ''.join(filter (lambda i: i.isdigit(), temp_string)) 
-            drep_embed.add_field(name="Reports History", value=f"{member.mention} Has **{str(total_reports)}** reports in history", inline=False)
+            #array_len = await self.client.pg_con.fetch("SELECT array(length(report, 1) FROM reports WHERE user_id = $1", member_id)
+            rows = await self.client.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
+            new_list=[]
+            new_list.append(rows)
+            drep_embed.add_field(name="Reports History", value=f"{new_list}", inline=False)
             await ctx.send(embed=drep_embed)
             return
     
