@@ -25,14 +25,14 @@ with open(os.path.join(parent_dir,"settings/pass.json")) as password:
 async def create_db_pool():
     try:
         client.pg_con = await asyncpg.create_pool(database="discordbot", user="pr0xe", password=PASS["password"])
-        print(colored("Database opened successfully",'cyan'))
+        print(colored("Database opened successfully",'cyan', 'on_white')+ u'\u2705')
     except:
         print("Unable to connect")   
 
 
 @client.event
 async def on_ready():
-    print(colored(f'{client.user} has connected to Discord!', 'cyan'))
+    print(colored(f'{client.user} has connected to Discord!', 'white', 'on_red'))
     await client.change_presence(activity=discord.Game(name="cl.help"))
 
 @client.event
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     for file in os.listdir(os.path.join(parent_dir,"cogs")):
         if file.endswith('.py'):
             client.load_extension(f'cogs.{file[:-3]}')
-            print(colored(f"{file} LOADED!",'green'))
+            print( (colored(f"{file} LOADED!",'green')) + u'\u2705' )
 
 client.loop.run_until_complete(create_db_pool())
 client.run(token["token"])
