@@ -1,7 +1,11 @@
+from array import array
 import discord
 import asyncio
+from discord import embeds
 from discord.ext import commands
 from discord import Embed, Member
+from discord.ext.commands.errors import MissingRequiredArgument
+import re
 
 class Report(commands.Cog):
     def __init__(self,client):
@@ -76,10 +80,25 @@ class Report(commands.Cog):
 
     @commands.command(pass_context = True)
     @commands.has_permissions(ban_members=True)
-    async def reports(self, ctx, member: discord.Member):
+    async def reports(self, ctx, member: discord.Member = None):
         drep_embed = discord.Embed(
                 title=":white_circle: Report Status :white_heart:",
                 colour=0xFFFFFF)
+        if not member:
+            users_id = await self.client.pg_con.fetch("SELECT user_id FROM reports")
+            IDS = re.findall('[0-9]+', str(users_id))
+            if not IDS:
+                drep_embed.add_field(name="Reports not found", value="0", inline=False)
+                await ctx.send(embed=drep_embed)
+                return
+            for i in range(len(IDS)):
+                array_len = await self.client.pg_con.fetch("SELECT array_length(report,1) FROM reports WHERE user_id = $1", IDS[i])
+                temp_string = str(array_len)
+                total_reports = ''.join(filter (lambda i: i.isdigit(), temp_string))
+                user = self.client.get_user(int(IDS[i]))
+                drep_embed.add_field(name=f"{user}", value=f"**{str(total_reports)}** reports in history", inline=False)    
+            await ctx.send(embed=drep_embed)
+            return
         member_id = str(member.id)
         user = await self.client.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
         if not user:
@@ -87,18 +106,22 @@ class Report(commands.Cog):
             await ctx.send(embed=drep_embed)
             return
         else:
-            #array_len = await self.client.pg_con.fetch("SELECT array(length(report, 1) FROM reports WHERE user_id = $1", member_id)
             rows = await self.client.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
-            new_list=[]
-            new_list.append(rows)
-            drep_embed.add_field(name="Reports History", value=f"{new_list}", inline=False)
-            await ctx.send(embed=drep_embed)
+            clean_rows = re.findall(r"'([^']+)'", str(rows))
+            rep_embed = discord.Embed(
+                title=f"User report history - {member}",
+                colour=0xFFFFFF)
+            rep_embed.add_field(name="Report messages", value=f"{str(clean_rows)}", inline=False)
+            await ctx.send(embed=rep_embed)
             return
     
     @reports.error
     async def reports_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Missing User", description=f"{ctx.message.author.mention} Specify the user!", color=0xff00f6)
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.MissingPermissions):
+            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
             await ctx.send(embed=embed)
 
 def setup(client):
