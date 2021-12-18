@@ -30,8 +30,7 @@ class ServerInfo(commands.Cog):
                 ("Humans", len(list(filter(lambda m: not m.bot,guild.members))),True),
                 ("Bots", len(list(filter(lambda m: m.bot,guild.members))), True), 
                 ("Roles", len(ctx.guild.roles), True),
-                ("Statuses", f"🟢 {statuses[0]} 🟠 {statuses[1]} 🔴 {statuses[2]} ⚪ {statuses[3]}", True),
-                ("\u200b", "\u200b", True)]   
+                ("Statuses", f"🟢 {statuses[0]} 🟠 {statuses[1]} 🔴 {statuses[2]} ⚪ {statuses[3]}", False)]   
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
