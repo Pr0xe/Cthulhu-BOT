@@ -24,7 +24,6 @@ class ServerInfo(commands.Cog):
 
         fields = [("Server Name", guild.name, True),
                 ("Server Owner", f'<@{owner}>', True),
-                ("Region", ctx.guild.region, True),
                 ("Created at", ctx.guild.created_at.strftime("%d/%m/%Y"), True),
                 ("Members", guild.member_count, True),
                 ("Banned members", len(await ctx.guild.bans()), True),
