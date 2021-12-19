@@ -36,5 +36,6 @@ class ServerInfo(commands.Cog):
             embed.add_field(name=name, value=value, inline=inline)
         await ctx.send(embed=embed)
         await log_channel.send(f"Server informations printed : requested by {ctx.author.mention}")
+
 def setup(bot):
     bot.add_cog(ServerInfo(bot))
