@@ -3,4 +3,5 @@ from bot import bot
 
 VERSION = "2.0.0"
 
+
 bot.run(VERSION)
