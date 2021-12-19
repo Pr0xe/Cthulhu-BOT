@@ -1,3 +1,5 @@
 settings/*.json
 *.json
 cogs/__pycache__/*.pyc
+bot/cogs/__pycache__/*.pyc
+bot/__pycache__/*.pyc
