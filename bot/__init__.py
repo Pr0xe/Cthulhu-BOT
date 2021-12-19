@@ -3,7 +3,6 @@ from sys import settrace, version
 import discord
 import json
 import asyncpg
-import os
 from glob import glob
 from pathlib import Path
 from discord import client
@@ -11,10 +10,8 @@ from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
 from termcolor import colored
 
-
 PREFIX = "cl."
 COGS = [path.split("\\")[-1][:-3] for path in glob("./bot/cogs/*.py")]
-parent_dir = "/home/pr0xe/Cth"
 
 async def get_prefix(bot, message):
     with open("data/prefixes.json", 'r') as f:
