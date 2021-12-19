@@ -9,7 +9,7 @@ class Advanced(commands.Cog):
     @commands.command(pass_context = True)
     @commands.has_permissions(kick_members=True)
     async def advanced(self, ctx):
-        with open("settings/prefixes.json", 'r') as f:
+        with open("data/prefixes.json", 'r') as f:
                 prefixes = json.load(f)    
         pre = prefixes[str(ctx.guild.id)]
         embed_mod = discord.Embed(
