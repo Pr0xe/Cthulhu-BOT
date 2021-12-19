@@ -10,7 +10,6 @@ from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
 from termcolor import colored
 
-PREFIX = "cl."
 COGS = [path.split("\\")[-1][:-3] for path in glob("./bot/cogs/*.py")]
 
 async def get_prefix(bot, message):
