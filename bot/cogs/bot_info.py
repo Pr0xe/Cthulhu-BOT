@@ -25,7 +25,7 @@ class BotInfo(commands.Cog):
                     ("Programming Language", f"{python_p[0]}  {python_p[1]}",True ),
                     ("Server counter", len(self.bot.guilds),True),
                     ("Discord Version", discord.__version__,False),
-                    ("Latency", f"{round(self.bot.latency * 1000)}ms", True)]
+                    ("Latency", f"{self.bot.latency * 1000:,.0f}ms", True)]
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)           
