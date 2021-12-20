@@ -28,7 +28,6 @@ class BotInfo(commands.Cog):
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
-        embed.set_footer("If you want more info, contact with developer")           
         await ctx.send(embed=embed)
         await log_channel.send(f"BOT Infos printed : requested by {ctx.author}")
     
