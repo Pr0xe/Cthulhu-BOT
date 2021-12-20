@@ -75,7 +75,13 @@ class Levels(commands.Cog):
                 none_field = _data[i][0]
                 await self.bot.pg_con.execute("DELETE FROM levels WHERE user_id = $1", none_field)
         await ctx.send("Dead members cleared from Database")
-   
+    
+    @cleardb.error
+    async def rmlevel_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
+            await ctx.send(embed=embed)
+
     @commands.command(pass_context = "True")
     @commands.has_permissions(ban_members=True)
     async def rmlevel(self, ctx, member: discord.Member):
