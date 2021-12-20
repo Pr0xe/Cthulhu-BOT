@@ -12,7 +12,7 @@ from termcolor import colored
 
 COGS = [path.split("\\")[-1][:-3] for path in glob("./bot/cogs/*.py")]
 
-async def get_prefix(bot, message):
+async def get_prefix(self, message):
     with open("data/prefixes.json", 'r') as f:
         prefixes = json.load(f)
     return prefixes[str(message.guild.id)]
@@ -61,7 +61,7 @@ class Bot(BotBase):
         print(colored(f'Cthulhu has connected to Discord!', 'red')) 
         await bot.change_presence(activity=discord.Game(name="cl.help"))
 
-    async def on_member_join(member):
+    async def on_member_join(self, member):
         channel = bot.get_channel(784492565239037973)
         log_channel = bot.get_channel(900492686581178398)
         user_embed = discord.Embed(
@@ -75,7 +75,7 @@ class Bot(BotBase):
         await log_channel.send(f"{role.mention} role added to {member.mention}")
 
 
-    async def on_member_remove(member):
+    async def on_member_remove(self, member):
         channel = bot.get_channel(825767793102291024)
         bye_embed = discord.Embed(
             color=0x737373,
