@@ -1,5 +1,6 @@
 import discord
 import asyncio
+from discord import embeds
 from discord.ext import commands
 from discord import Embed, Member
 
@@ -17,7 +18,6 @@ class Levels(commands.Cog):
         else:
             return False
         
-
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:
@@ -57,7 +57,25 @@ class Levels(commands.Cog):
             embed.add_field(name="Total XP", value=user[0]['xp'])
             embed.add_field(name="XP to next Level", value=((round((4 * (user[0]['level'] ** 3)) / 5)) - (user[0]['xp'])), inline=False)
             await ctx.send(embed=embed)
-    
+   
+    @commands.command(pass_context = "True")
+    async def board(self, ctx):
+        _data = await self.bot.pg_con.fetch("SELECT * FROM levels ORDER BY level DESC")
+        embed = discord.Embed(title="Level - XP Leaderboard", color=0x29aff2, timestamp=ctx.message.created_at)
+        for i in range(len(_data)):
+            embed.add_field(name=f"{self.bot.get_user(int(_data[i][0]))}", value=f"level : {int(_data[i][2])}  XP : {int(_data[i][3])}")
+        await ctx.send(embed=embed)
+
+    @commands.command(pass_context = "True")
+    @commands.has_permissions(ban_members=True)
+    async def cleardb(self, ctx):
+        _data = await self.bot.pg_con.fetch("SELECT * FROM levels")
+        for i in range(len(_data)):
+            if self.bot.get_user(int(_data[i][0])) == None:
+                none_field = _data[i][0]
+                await self.bot.pg_con.execute("DELETE FROM levels WHERE user_id = $1", none_field)
+        await ctx.send("Dead members cleared from Database")
+   
     @commands.command(pass_context = "True")
     @commands.has_permissions(ban_members=True)
     async def rmlevel(self, ctx, member: discord.Member):
