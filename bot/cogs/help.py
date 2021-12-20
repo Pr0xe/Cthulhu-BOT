@@ -19,7 +19,7 @@ class Help(commands.Cog):
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dmessages`, `dreport`, `rmlevel`", inline= False) 
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `messages`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Reporting System", value="`report`, `reports`", inline= False)
-        embed_commands.add_field(name="Music", value="`play`, `pause`, `skip`, `queue`, `leave`, `volume`, `playing`", inline= False)
+        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `skip`, `queue`, `leave`, `volume`, `playing`", inline= False)
         await ctx.send(embed=embed_commands)
         
     @help.command()
@@ -202,6 +202,12 @@ class Help(commands.Cog):
         embed_commands = discord.Embed(title="Playing Now", description= "Print info about current playing song", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">playing or np")
         await ctx.send(embed=embed_commands)
-        
+    
+    @help.command()
+    async def stop(self, ctx):
+        embed_commands = discord.Embed(title="Stop", description= "Stop music and reset queue", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">stop")
+        await ctx.send(embed=embed_commands)
+
 def setup(bot):
     bot.add_cog(Help(bot))
