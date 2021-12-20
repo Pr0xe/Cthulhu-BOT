@@ -19,7 +19,7 @@ class Help(commands.Cog):
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dmessages`, `dreport`, `rmlevel`", inline= False) 
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `messages`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Reporting System", value="`report`, `reports`", inline= False)
-        embed_commands.add_field(name="Music", value="`play`, `pause`, `resume`, `skip`, `queue`, `disconnect`", inline= False)
+        embed_commands.add_field(name="Music", value="`play`, `pause`, `skip`, `queue`, `leave`, `volume`, `playing`", inline= False)
         await ctx.send(embed=embed_commands)
         
     @help.command()
@@ -168,7 +168,7 @@ class Help(commands.Cog):
     
     @help.command()
     async def play(self, ctx):
-        embed_commands = discord.Embed(title="Play", description= "Play music on your voice channel", color= ctx.author.color)
+        embed_commands = discord.Embed(title="Play", description= "Play music on your voice channel, or to continue paused song", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">play or p <name of song>")
         await ctx.send(embed=embed_commands)
     
@@ -178,11 +178,6 @@ class Help(commands.Cog):
         embed_commands.add_field(name="**Syntax**", value=f">pause")
         await ctx.send(embed=embed_commands)
     
-    @help.command()
-    async def resume(self, ctx):
-        embed_commands = discord.Embed(title="Resume", description= "Resume song", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">resume")
-        await ctx.send(embed=embed_commands)
     
     @help.command()
     async def queue(self, ctx):
@@ -191,10 +186,22 @@ class Help(commands.Cog):
         await ctx.send(embed=embed_commands)
     
     @help.command()
-    async def Disconnect(self, ctx):
-        embed_commands = discord.Embed(title="Disconnect", description= "Disconnect bot from voice channel", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">disconnect or leave")
+    async def leave(self, ctx):
+        embed_commands = discord.Embed(title="Leave", description= "Disconnect bot from voice channel", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">leave")
         await ctx.send(embed=embed_commands)
     
+    @help.command()
+    async def volume(self, ctx):
+        embed_commands = discord.Embed(title="Volume", description= "Increasing or Decreasing Volume (0 min - 150 max)", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">volume 0-150")
+        await ctx.send(embed=embed_commands)
+    
+    @help.command()
+    async def playing(self, ctx):
+        embed_commands = discord.Embed(title="Playing Now", description= "Print info about current playing song", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">playing or np")
+        await ctx.send(embed=embed_commands)
+        
 def setup(bot):
     bot.add_cog(Help(bot))
