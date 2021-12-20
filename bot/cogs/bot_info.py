@@ -23,12 +23,12 @@ class BotInfo(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author}")
         fields = [  ("Bot Developer", pr0xe_id, False),
                     ("Programming Language", f"{python_p[0]}  {python_p[1]}",True ),
-                    ("Server counter", len(self.bot.guilds),True),
                     ("Discord Version", discord.__version__,False),
                     ("Latency", f"{self.bot.latency * 1000:,.0f}ms", True)]
 
         for name, value, inline in fields:
-            embed.add_field(name=name, value=value, inline=inline)           
+            embed.add_field(name=name, value=value, inline=inline)
+        embed.set_footer("If you want more info, contact with developer")           
         await ctx.send(embed=embed)
         await log_channel.send(f"BOT Infos printed : requested by {ctx.author}")
     
