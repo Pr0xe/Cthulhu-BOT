@@ -28,7 +28,7 @@ class Levels(commands.Cog):
         user = await self.bot.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
         
         if not user:
-            await self.pg_con.execute("INSERT INTO levels (user_id, guild_id, level, xp) VALUES ($1, $2, 1, 0)", author_id, guild_id)
+            await self.bot.pg_con.execute("INSERT INTO levels (user_id, guild_id, level, xp) VALUES ($1, $2, 1, 0)", author_id, guild_id)
 
         user = await self.bot.pg_con.fetchrow("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
         await self.bot.pg_con.execute("UPDATE levels SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
@@ -61,7 +61,7 @@ class Levels(commands.Cog):
     @commands.command(pass_context = "True")
     async def board(self, ctx):
         _data = await self.bot.pg_con.fetch("SELECT * FROM levels ORDER BY level DESC")
-        embed = discord.Embed(title="Level - XP Leaderboard", color=0x29aff2, timestamp=ctx.message.created_at)
+        embed = discord.Embed(title=" :crown: Level - XP Leaderboard :crown:", color=0x29aff2)
         for i in range(len(_data)):
             embed.add_field(name=f"{self.bot.get_user(int(_data[i][0]))}", value=f"level : {int(_data[i][2])}  XP : {int(_data[i][3])}")
         await ctx.send(embed=embed)
