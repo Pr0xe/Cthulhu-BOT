@@ -218,7 +218,7 @@ class Help(commands.Cog):
     @help.command()
     async def seek(self, ctx):
         embed_commands = discord.Embed(title="Seek", description= "Forward the song where you want to start", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">seek 1m10 or 20s ()", inline=False)
+        embed_commands.add_field(name="**Syntax**", value=f">seek 1m10 or 20s", inline=False)
         embed_commands.add_field(name="**Explanation**", value=f"m: minutes, s: seconds ex.(cl.seek 30s : it will start at 30s)")
         await ctx.send(embed=embed_commands)
     
