@@ -19,7 +19,7 @@ class Help(commands.Cog):
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`,`cleardb`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dmessages`, `dreport`, `rmlevel`", inline= False) 
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `messages`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Reporting System", value="`report`, `reports`", inline= False)
-        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `skip`, `queue`, `leave`, `volume`, `playing`", inline= False)
+        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `seek`, `skip`, `queue`, `restart`, `volume`, `playing`, `leave`,", inline= False)
         await ctx.send(embed=embed_commands)
         
     @help.command()
@@ -207,6 +207,19 @@ class Help(commands.Cog):
     async def stop(self, ctx):
         embed_commands = discord.Embed(title="Stop", description= "Stop music and reset queue", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">stop")
+        await ctx.send(embed=embed_commands)
+    
+    @help.command()
+    async def restart(self, ctx):
+        embed_commands = discord.Embed(title="Restart", description= "Restart current track", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">restart")
+        await ctx.send(embed=embed_commands)
+    
+    @help.command()
+    async def seek(self, ctx):
+        embed_commands = discord.Embed(title="Seek", description= "Forward the song where you want to start", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">seek 1m10 or 20s ()", inline=False)
+        embed_commands.add_field(name="**Explanation**", value=f"m: minutes, s: seconds ex.(cl.seek 30s : it will start at 30s)")
         await ctx.send(embed=embed_commands)
     
     @help.command()
