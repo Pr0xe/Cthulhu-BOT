@@ -16,8 +16,8 @@ class Help(commands.Cog):
             title = "Commands",
             description = f"Use `{pre}`help <command> for extended information on a command"
         )
-        embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`,`cleardb`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dmessages`, `dreport`, `rmlevel`", inline= False) 
-        embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `messages`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
+        embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`,`cleardb`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dreport`, `rmlevel`", inline= False) 
+        embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Reporting System", value="`report`, `reports`", inline= False)
         embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `seek`, `skip`, `queue`, `restart`, `volume`, `playing`, `leave`,", inline= False)
         await ctx.send(embed=embed_commands)
@@ -116,18 +116,6 @@ class Help(commands.Cog):
     async def dreport(self, ctx):
         embed_commands = discord.Embed(title="dreport", description= "Remove reports from the user", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">dreport <@member>")
-        await ctx.send(embed=embed_commands)
-
-    @help.command()
-    async def messages(self, ctx):
-        embed_commands = discord.Embed(title="Messages", description= "List deleted messages", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">messages")
-        await ctx.send(embed=embed_commands)
-    
-    @help.command()
-    async def dmessages(self, ctx):
-        embed_commands = discord.Embed(title="dmessages", description= "Remove deleted messages", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">dmessages")
         await ctx.send(embed=embed_commands)
     
     @help.command()
