@@ -57,9 +57,11 @@ class Bot(BotBase):
         print("Running bot...")
         super().run(self.token["token"], reconnect=True)
     
-    async def on_connect(self):
-        print(colored(f'Cthulhu has connected to Discord!', 'red')) 
+    async def on_ready(self):
+        channel = bot.get_channel(900492686581178398)
+        print(colored(f'Cthulhu has connected to Discord!', 'red'))
         await bot.change_presence(activity=discord.Game(name="cl.help"))
+        await channel.send(f'`{self.user} has connected to Discord!`')
 
     async def on_member_join(self, member):
         channel = bot.get_channel(784492565239037973)
