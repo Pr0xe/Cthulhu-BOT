@@ -48,7 +48,10 @@ class Levels(commands.Cog):
         user = await self.bot.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", member_id, guild_id)
 
         if not user:
-            await ctx.send(f"{member.mention} doesn't have level")
+            embed = discord.Embed(color=0x29aff2, timestamp=ctx.message.created_at)
+            embed.set_author(name=f"Level - {member}", icon_url=member.avatar_url)
+            embed.add_field(name="Level", value=f"No level Found")
+            await ctx.send(embed=embed)
 
         else:
             embed = discord.Embed(color=0x29aff2, timestamp=ctx.message.created_at)
@@ -77,7 +80,7 @@ class Levels(commands.Cog):
         await ctx.send("Dead members cleared from Database")
     
     @cleardb.error
-    async def rmlevel_error(self, ctx, error):
+    async def cleardb_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
             await ctx.send(embed=embed)
@@ -86,14 +89,19 @@ class Levels(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def rmlevel(self, ctx, member: discord.Member):
         log_channel = self.bot.get_channel(900492686581178398)
+        embed = discord.Embed(
+                colour=0xFFA500,
+                timestamp=ctx.message.created_at)
         if not member:
             await ctx.send(f"{ctx.message.author.mention} Please specify user")
             return
         else:
             member_id = str(member.id)
             await self.bot.pg_con.execute("DELETE FROM levels WHERE user_id = $1", member_id)
-            await log_channel.send(f"{member.mention} level cleared")
-    
+            embed.add_field(name="Level Message", value=f"{ctx.message.author.mention} removed level from {member}", inline=True)
+            await ctx.send(embed=embed)
+            await log_channel.send(f"{ctx.message.author.mention} removed level from {member.mention}")
+
     @rmlevel.error
     async def rmlevel_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
