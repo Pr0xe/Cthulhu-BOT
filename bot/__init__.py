@@ -74,7 +74,7 @@ class Bot(BotBase):
         await channel.send(embed=user_embed)
         role = discord.utils.get(member.guild.roles, id=831109657094520843)
         await member.add_roles(role)
-        await log_channel.send(f"{role.mention} role added to {member.mention}")
+        await log_channel.send(f"{member} joined the server")
 
 
     async def on_member_remove(self, member):
