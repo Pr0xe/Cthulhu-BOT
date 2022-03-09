@@ -1,4 +1,4 @@
-<img align="top" src="https://coverfiles.alphacoders.com/693/6932.jpg">
+<img align="top" src="https://freegametips.com/wp-content/uploads/2020/11/1605534269_Lovecraft-and-the-Call-of-Cthulhu-Approach-to-cosmic-terror.jpg">
 
 # Cthulhu-bot [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE) [![Chat](https://img.shields.io/discord/392363941931515904?color=%236a5acd)](https://discord.gg/SHzBjqXcq6) [![Python](https://img.shields.io/pypi/pyversions/Discord.py)](https://www.python.org)
 **Cthulhu** is an open-source Discord bot written in Python, [Discord.py](https://discordpy.readthedocs.io/en/latest/)
