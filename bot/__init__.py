@@ -85,7 +85,7 @@ class Bot(BotBase):
             description=f'{member} has left from the server!!'
         )
         await channel.send(embed=bye_embed)
-
+        
 async def create_db_pool():
         try:
             with open("data/pass.json") as password:

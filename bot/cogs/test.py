@@ -6,7 +6,7 @@ class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(pass_context=True, name="test")
+    @commands.command()
     async def test(self,ctx):
         python_p = ["Python", platform.python_version()]
         await ctx.reply(f'**Cthulhu is Online :green_circle: ** \n_Made by <@188771015751368704>_')
