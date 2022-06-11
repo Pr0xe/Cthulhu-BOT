@@ -19,7 +19,7 @@ class Help(commands.Cog):
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`,`cleardb`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dreport`, `rmlevel`", inline= False) 
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Reporting System", value="`report`, `reports`", inline= False)
-        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `seek`, `skip`, `queue`, `restart`, `volume`, `playing`, `leave`,", inline= False)
+        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `seek`, `skip`, `queue`, `restart`, `volume`, `playing`, `leave`, `shuffle`", inline= False)
         await ctx.send(embed=embed_commands)
         
     @help.command()
@@ -201,6 +201,12 @@ class Help(commands.Cog):
     async def restart(self, ctx):
         embed_commands = discord.Embed(title="Restart", description= "Restart current track", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">restart")
+        await ctx.send(embed=embed_commands)
+
+    @help.command()
+    async def shuffle(self, ctx):
+        embed_commands = discord.Embed(title="Shuffle", description= "Shuffle the song queue", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">shuffle")
         await ctx.send(embed=embed_commands)
     
     @help.command()
