@@ -7,7 +7,7 @@ class Test(commands.Cog):
     
     @commands.command()
     async def test(self,ctx):
-        await ctx.reply(f'**Cthulhu is Online :green_circle: ** \n _Made by <@188771015751368704>_')
+        await ctx.reply(f'**Cthulhu is Online :green_circle: ** \n_Made by <@188771015751368704>_')
 
 def setup(bot):
     bot.add_cog(Test(bot))
