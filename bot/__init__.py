@@ -72,7 +72,7 @@ class Bot(BotBase):
             description=f'{member.mention} Welcome to **{member.guild.name}** Server !!'
         )
         await channel.send(embed=user_embed)
-        role = discord.utils.get(member.guild.roles, id=831109657094520843)
+        role = discord.utils.get(member.guild.roles, id=1012388618762997800)
         await member.add_roles(role)
         await log_channel.send(f"{member} joined the server")
 
