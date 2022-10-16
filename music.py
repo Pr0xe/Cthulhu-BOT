@@ -59,13 +59,13 @@ class Music(commands.Cog):
             self.is_playing = False
 
     @commands.command(aliases=['p'])
-    async def play(self, ctx, *args):
+    async def play(self, ctx, *args, query: t.Optional[str]):
         query = " ".join(args)
         
         voice_channel = ctx.author.voice.channel
         if voice_channel is None:
             #you need to be connected so that the bot knows where to go
-            await ctx.send("Connect to a voice channel!")
+            await ctx.send("You are not connected to voice channel!")
         else:
             song = self.search_yt(query)
             if type(song) == type(True):

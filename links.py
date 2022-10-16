@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord import Embed, Member
 
 class Links(commands.Cog):
     def __init__(self,bot):
