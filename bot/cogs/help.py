@@ -19,7 +19,7 @@ class Help(commands.Cog):
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`,`cleardb`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`, `dreport`, `rmlevel`", inline= False) 
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `poll`, `memes`, `level`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Reporting System", value="`report`, `reports`", inline= False)
-        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `seek`, `skip`, `queue`, `restart`, `volume`, `playing`, `leave`, `shuffle`", inline= False)
+        embed_commands.add_field(name="Music", value="`play`, `pause`, `stop`, `skip`, `queue`, `restart`, `playing`, `leave`, `shuffle`", inline= False)
         await ctx.send(embed=embed_commands)
         
     @help.command()
@@ -180,12 +180,6 @@ class Help(commands.Cog):
         await ctx.send(embed=embed_commands)
     
     @help.command()
-    async def volume(self, ctx):
-        embed_commands = discord.Embed(title="Volume", description= "Increasing or Decreasing Volume (0 min - 150 max)", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">volume 0-150")
-        await ctx.send(embed=embed_commands)
-    
-    @help.command()
     async def playing(self, ctx):
         embed_commands = discord.Embed(title="Playing Now", description= "Print info about current playing song", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">playing or np")
@@ -207,13 +201,6 @@ class Help(commands.Cog):
     async def shuffle(self, ctx):
         embed_commands = discord.Embed(title="Shuffle", description= "Shuffle the song queue", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">shuffle")
-        await ctx.send(embed=embed_commands)
-    
-    @help.command()
-    async def seek(self, ctx):
-        embed_commands = discord.Embed(title="Seek", description= "Forward the song where you want to start", color= ctx.author.color)
-        embed_commands.add_field(name="**Syntax**", value=f">seek 1m10 or 20s", inline=False)
-        embed_commands.add_field(name="**Explanation**", value=f"m: minutes, s: seconds ex.(cl.seek 30s : it will start at 30s)")
         await ctx.send(embed=embed_commands)
     
     @help.command()
