@@ -8,7 +8,7 @@ class Clear(commands.Cog):
     @commands.command(pass_context=True)
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount:int):
-        channel = ctx.message.channel
+        channel = ctx.channel
         if amount < 0:
             await ctx.send("Amount cannot be negative")
             print("ERROR: negative amount")
@@ -16,10 +16,7 @@ class Clear(commands.Cog):
             embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Cannot delete more than `100 messages`", color=0xff00f6)
             await ctx.send(embed=embed)       
         else:
-             with channel.typing():
-                await channel.purge(limit=amount+1)
-                embed=discord.Embed(title=":recycle: Deleted Messages :recycle:", description=f"{ctx.message.author.mention} deleted `{amount}` messages", color=0x32CD32)
-                await ctx.send(embed=embed)
+            await channel.purge(limit=amount+1)
         
     @clear.error
     async def clear_error(self, ctx, error):
