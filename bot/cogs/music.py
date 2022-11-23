@@ -40,6 +40,13 @@ class Music(commands.Cog):
 			await ctx.send("Please go to song channel :arrow_right: <#692020480353501247>")
 			return False
 		return True
+	
+	@commands.Cog.listener()
+	async def on_voice_state_update(self, member, before, after):
+		node = wavelink.NodePool.get_node()
+		if not member.bot and after.channel is None:
+			if not [m for m in before.channel.members if not m.bot]:
+				await node.get_player(member.guild).disconnect()
 
 	@commands.Cog.listener()
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
@@ -139,7 +146,7 @@ class Music(commands.Cog):
 
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-		
+
 		try:
 			if emojis_dict[reaction.emoji] == -1: return
 			choosed_track = tracks[emojis_dict[reaction.emoji]]
