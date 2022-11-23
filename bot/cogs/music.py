@@ -17,8 +17,6 @@ class Music(commands.Cog):
 		self.bot = bot
 		self.queue = []
 		self.position = 0
-		self.repeat = False
-		self.repeatMode = "NONE"
 		self.playingTextChannel = 0
 		bot.loop.create_task(self.create_nodes())
 	
