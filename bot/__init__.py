@@ -33,8 +33,8 @@ class Ready(object):
 class Bot(BotBase):
     def __init__(self):
         self.ready = False
-        self.cogs_ready = Ready()
         self.guild = None
+        self.synced = False
         self._cogs = [p.stem for p in Path(".").glob("./bot/cogs/*.py")]
         super().__init__(command_prefix=get_prefix,
                       help_command=None,
@@ -45,11 +45,13 @@ class Bot(BotBase):
         for cog in self._cogs:
             await self.load_extension(f"bot.cogs.{cog}")
             print((colored(f"{cog} LOADED!", 'green')))
+        if not self.synced:
+            await bot.tree.sync(guild=discord.Object(id=392363941931515904))
+            self.synced = True
         print("setup completed")
     
     def run(self, version):
         self.VERSION = version
-        print("running setup...")
 
         with open("data/token.json", 'r', encoding="utf-8") as f:
             self.token = json.load(f)
@@ -83,17 +85,5 @@ class Bot(BotBase):
             description=f'{member} has left from the server!!'
         )
         await channel.send(embed=bye_embed)
-        
-async def create_db_pool():
-        try:
-            with open("data/pass.json") as password:
-                PASS = json.load(password)
-            Bot.pg_con = await asyncpg.create_pool(database="discordbot", user="pr0xe", password=PASS["password"])
-            print(colored("Database opened successfully", 'cyan'))
-        except:
-            print("Unable to connect")
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(create_db_pool())  
 
 bot = Bot()
