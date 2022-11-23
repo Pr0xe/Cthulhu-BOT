@@ -124,5 +124,5 @@ class Report(commands.Cog):
             embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
             await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(Report(bot))                
+async def setup(bot):
+    await bot.add_cog(Report(bot))                

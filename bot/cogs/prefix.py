@@ -38,6 +38,5 @@ class Prefix(commands.Cog):
             await ctx.send(embed=embed)
             print("Prefix missing")
         
-
-def setup(bot):
-    bot.add_cog(Prefix(bot))
+async def setup(bot):
+    await bot.add_cog(Prefix(bot))

@@ -20,5 +20,5 @@ class Poll(commands.Cog):
             embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} **Arguments Missing**", color=0xff00f6)
             await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(Poll(bot))
+async def setup(bot):
+    await bot.add_cog(Poll(bot))

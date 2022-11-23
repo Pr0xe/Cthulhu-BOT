@@ -215,5 +215,5 @@ class Help(commands.Cog):
         embed_commands.add_field(name="**Syntax**", value=f">cleardb")
         await ctx.send(embed=embed_commands)
 
-def setup(bot):
-    bot.add_cog(Help(bot))
+async def setup(bot):
+    await bot.add_cog(Help(bot))

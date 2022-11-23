@@ -131,6 +131,5 @@ class Roles(commands.Cog):
             embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} You are lacking a required role", color=0xff0000)
             await ctx.send(embed=embed)
           
-
-def setup(bot):
-    bot.add_cog(Roles(bot))
+async def setup(bot):
+    await bot.add_cog(Roles(bot))

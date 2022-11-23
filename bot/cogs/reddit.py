@@ -56,5 +56,5 @@ class Reddit(commands.Cog):
             await ctx.send(embed=embed)
             print("nsfw channel error")
 
-def setup(bot):
-    bot.add_cog(Reddit(bot))
+async def setup(bot):
+    await bot.add_cog(Reddit(bot))

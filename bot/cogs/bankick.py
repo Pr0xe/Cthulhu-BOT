@@ -73,5 +73,5 @@ class BanKick(commands.Cog):
             embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
             await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(BanKick(bot))            
+async def setup(bot):
+    await bot.add_cog(BanKick(bot))            

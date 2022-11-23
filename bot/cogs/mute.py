@@ -42,5 +42,5 @@ class Mute(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Arguments Missing", description="{0} Specify the user".format(ctx.author.mention), color=0xff00f6)
             await ctx.send(embed=embed)
-def setup(bot):
-    bot.add_cog(Mute(bot))
+async def setup(bot):
+    await bot.add_cog(Mute(bot))

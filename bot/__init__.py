@@ -41,16 +41,15 @@ class Bot(BotBase):
                       case_insensitive=True,
                       intents=discord.Intents.all())
     
-    def setup(self):
+    async def setup_hook(self):
         for cog in self._cogs:
-            self.load_extension(f"bot.cogs.{cog}")
+            await self.load_extension(f"bot.cogs.{cog}")
             print((colored(f"{cog} LOADED!", 'green')))
         print("setup completed")
     
     def run(self, version):
         self.VERSION = version
         print("running setup...")
-        self.setup()
 
         with open("data/token.json", 'r', encoding="utf-8") as f:
             self.token = json.load(f)
@@ -75,7 +74,6 @@ class Bot(BotBase):
         role = discord.utils.get(member.guild.roles, id=1012388618762997800)
         await member.add_roles(role)
         await log_channel.send(f"{member} joined the server")
-
 
     async def on_member_remove(self, member):
         channel = bot.get_channel(825767793102291024)

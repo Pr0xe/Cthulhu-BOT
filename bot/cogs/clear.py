@@ -37,5 +37,5 @@ class Clear(commands.Cog):
             await ctx.send(embed=embed)
             print(error)
             
-def setup(bot):
-    bot.add_cog(Clear(bot))
+async def setup(bot):
+    await bot.add_cog(Clear(bot))

@@ -30,5 +30,5 @@ class User_info(commands.Cog):
         await ctx.send(embed=em_user)
         await log_channel.send(f"Informations about {member} printed: requested by {ctx.author}")
 
-def setup(bot):
-    bot.add_cog(User_info(bot))
+async def setup(bot):
+    await bot.add_cog(User_info(bot))
