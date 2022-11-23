@@ -9,16 +9,18 @@ class User_info(commands.Cog):
     async def user_info(self, ctx, member: discord.Member = None):
         log_channel = self.bot.get_channel(900492686581178398)
         if not member:
-            member = ctx.message.author
+            member = ctx.author
+        
+        name = member.display_name
         roles = [role for role in member.roles[1:]]
         em_user = discord.Embed(
             title=f"User info - {member}",
             colour=0xFFA500,
             timestamp=ctx.message.created_at)
-        em_user.set_thumbnail(url=member.avatar_url)
-        em_user.set_footer(text=f"Requested by {ctx.author}")
+        em_user.set_thumbnail(url=member.display_avatar)
+        em_user.set_footer(text=f"Requested by {name}")
         fields = [
-            ("Username", member.display_name),
+            ("Username", name),
             ("Created Account On:", member.created_at.strftime("%#d %B %Y")),
             ("Joined Server On:", member.joined_at.strftime("%#d %B %Y")),
             ("Roles:", "".join([role.mention for role in roles])),
