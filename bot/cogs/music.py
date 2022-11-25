@@ -1,9 +1,11 @@
+import re
 import discord
 import typing as t
 import wavelink
 import asyncio
-
 from discord.ext import commands
+
+URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
 
 class AlreadyConnectedToChannel(commands.CommandError):
     pass
@@ -76,18 +78,17 @@ class Music(commands.Cog):
 	async def connect_command(self, ctx, *, channel: t.Optional[discord.VoiceChannel]):
 		if channel is None:
 			channel = ctx.author.voice.channel
-		
+
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-
+		
 		if player is not None:
 			if player.is_connected():
 				return await ctx.send(f"{ctx.author.mention} BOT is already connected to a voice channel")
 
 		await channel.connect(cls=wavelink.Player)
-		mbed = discord.Embed(title=f"Connected to {channel.name}", color=discord.Color.from_rgb(255,255,255))
-		await ctx.send(embed=mbed)
-	
+		await ctx.send(f"Connected to {channel.name}.")
+		
 	@commands.command(name="leave", aliases=["disconnect"])
 	async def leave_command(self, ctx):
 		node = wavelink.NodePool.get_node()
@@ -97,11 +98,20 @@ class Music(commands.Cog):
 			return await ctx.send(f"{ctx.author.mention}, Bot is not connected to any channel")
 
 		await player.disconnect()
-		mbed = discord.Embed(title=f"Disconnected :wave:", color=discord.Color.from_rgb(255,255,255))
-		await ctx.send(embed=mbed)
+		await ctx.send(f"Disconnected :wave:")
 
-	@commands.command(name="play")
-	async def play_command(self, ctx, *, search: str):
+	@commands.command(name="play", aliases=['p'])
+	async def play_command(self, ctx, *, search: t.Optional[str]):
+		node = wavelink.NodePool.get_node()
+		player = node.get_player(ctx.guild)
+
+		if player is None:
+			await ctx.author.voice.channel.connect(cls=wavelink.Player)
+
+		if search is None:
+			if (len(self.queue)==0) and player.is_paused():
+				await player.resume()
+				return await ctx.reply(embed=discord.Embed(title="Playback resumed :arrow_forward:", color=discord.Color.from_rgb(0,255,0)))
 		
 		try:
 			tracks = await wavelink.YouTubeTrack.search(query=search)
@@ -142,26 +152,26 @@ class Music(commands.Cog):
 		else:
 			await msg.delete()
 
-		node = wavelink.NodePool.get_node()
-		player = node.get_player(ctx.guild)
-
 		try:
 			if emojis_dict[reaction.emoji] == -1: return
 			choosed_track = tracks[emojis_dict[reaction.emoji]]
 		except:
 			return
+	
+		if not ctx.voice_client:
+			vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+		else:
+			vc: wavelink.Player = ctx.voice_client
 
-		vc: wavelink.Player = ctx.voice_client or await ctx.author.voice.channel.connect(cls=wavelink.Player)
-		
-		if not vc.is_playing() and not player.is_paused():
+		if not vc.is_playing():
 			try:
 				await vc.play(choosed_track)
 			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255, 0, 0)))
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255, 255, 255)))
 		else:
 			self.queue.append(choosed_track)
-
-		await ctx.reply(embed=discord.Embed(title=f"Added {choosed_track.title} to the queue", color=discord.Color.from_rgb(255, 255, 255)))
+		mbed = discord.Embed(title=f"Added {choosed_track} To the queue", color=discord.Color.from_rgb(255, 255, 255))
+		await ctx.send(embed=mbed)
 
 	@commands.command(name="stop")
 	async def stop_command(self, ctx):
@@ -196,7 +206,8 @@ class Music(commands.Cog):
 			else:
 				await ctx.send("Nothing is playing right now")
 		else:
-			return await ctx.send("Playback is Already paused")	
+			return await ctx.send("Playback is Already paused")
+
 	@commands.command(name="resume")
 	async def resume_command(self, ctx):
 		node = wavelink.NodePool.get_node()
@@ -266,43 +277,44 @@ class Music(commands.Cog):
 			))
 		else:
 			await ctx.reply("The queue is empty")
-
 	@commands.command(name="queue", aliases=["q"])
-	async def queue_command(self, ctx, *, search=None):
+	async def queue_command(self, ctx: commands.Context, *, search=None):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-
+		
 		if search is None:
-			if not len(self.queue) ==0:
+			if not len(self.queue) == 0:
 				mbed = discord.Embed(
-					title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
-					description= "\n".join(f"**{i+1}. {track}**" for i, 
-					track in enumerate(self.queue[:10])) if not player.is_playing else "**Queue: **\n"+"\n"
-					.join(f"{i+1}.{track}**" for i, track in enumerate(self.queue[:10])),
-					color=discord.Color.from_rgb(255, 255, 255)
+				title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
+				description = "\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])) 
+					if not player.is_playing else "**Queue: **\n"+"\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])),
+				color=discord.Color.from_rgb(255, 255, 255)
 				)
+
 				return await ctx.reply(embed=mbed)
 			else:
-				return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 0, 0)))
+				return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
 		else:
 			try:
-				track = await wavelink.YouTubeTrack.search(query=search, return_first=True)
+				track = await wavelink.YoutubeTrack.search(query=search, return_first=True)
 			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255, 0, 0)))
-			if not ctx.voice.client:
-				vc: wavelink.Player = await ctx.author.voice.channel(cls=wavelink.Player)
-				await player.connect(ctx.author.voice.channel)
-			else:
-				vc: wavelink.Player = ctx.voice.client
-			
-			if not vc.is_playing():
-				try:
-					await vc.play(track)
-				except:
-					return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255, 0, 0)))
-			else:
-				self.queue.append(track)
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255, 255, 255)))
+		
+		if not ctx.voice_client:
+			vc: wavelink.Player = await ctx.author.voice.channel(cls=wavelink.Player)
+			await player.connect(ctx.author.voice.channel)
+		else:
+			vc: wavelink.Player = ctx.voice_client
+		
+		if not vc.is_playing():
+			try:
+				await vc.play(track)
+			except:
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255, 255, 255)))
+		else:
+			self.queue.append(track)
+		
+		await ctx.reply(embed=discord.Embed(title=f"Added {track.title} to the queue", color=discord.Color.from_rgb(255, 255, 255)))
 
-			await ctx.reply(embed=discord.Embed(title=f"Added {track.title} to the queue", color=discord.Color.from_rgb(0, 255, 0)))
 async def setup(bot):
 	await bot.add_cog(Music(bot)) 
