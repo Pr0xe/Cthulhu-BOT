@@ -5,15 +5,6 @@ import wavelink
 import asyncio
 from discord.ext import commands
 
-URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-
-class AlreadyConnectedToChannel(commands.CommandError):
-    pass
-
-class NoVoiceChannel(commands.CommandError):
-    pass
-
-
 class Music(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
