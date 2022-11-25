@@ -60,7 +60,7 @@ class Music(commands.Cog):
 		if str(reason) == "FINISHED":
 			if not len(self.queue) == 0:
 				next_track: wavelink.Track = self.queue[0]
-				channel = self.bot.get_channel(self.playingTextChannel)
+				channel = self.bot.get_channel(692020480353501247)
 
 				try:
 					await player.play(next_track)
@@ -68,7 +68,10 @@ class Music(commands.Cog):
 					return await channel.send(
 						embed=discord.Embed(title=f"Something went wrong while playing **{next_track.title}**",
 						color=discord.Color.from_rgb(255,0,0)))
-				await channel.send(embed=discord.Embed(title=f"Now Playing: {next_track.title}",color=discord.Color.from_rgb(0,255,0)))
+				await channel.send(embed=discord.Embed(
+					title=f"Now Playing: {next_track.title}",
+					url=f"{player.track.info['uri']}",
+					color=discord.Color.from_rgb(0,255,0)))
 			else:
 				pass
 		else:
@@ -167,10 +170,13 @@ class Music(commands.Cog):
 			try:
 				await vc.play(choosed_track)
 			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255, 255, 255)))
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
 		else:
 			self.queue.append(choosed_track)
-		mbed = discord.Embed(title=f"Added {choosed_track} To the queue", color=discord.Color.from_rgb(255, 255, 255))
+		mbed = discord.Embed(
+				title=f"Added {choosed_track} To the queue",
+				color=discord.Color.from_rgb(255, 255, 255)
+			)
 		await ctx.send(embed=mbed)
 
 	@commands.command(name="stop")
@@ -241,7 +247,7 @@ class Music(commands.Cog):
 			mbed = discord.Embed(
 				title=f"Now Playing: {player.track}",
 				url=f"{player.track.info['uri']}",
-				color=discord.Color.from_rgb(255,255,255)
+				color=discord.Color.from_rgb(0,255,0)
 			)
 
 			t_sec = int(player.track.length)
@@ -273,7 +279,8 @@ class Music(commands.Cog):
 				))
 			await ctx.reply(embed=discord.Embed(
 				title=f"Now Playing {next_track.title}",
-				color=discord.Color.from_rgb(255,255,255)
+				url=f"{player.track.info['uri']}",
+				color=discord.Color.from_rgb(0,255,0)
 			))
 		else:
 			await ctx.reply("The queue is empty")
@@ -288,7 +295,7 @@ class Music(commands.Cog):
 				title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
 				description = "\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])) 
 					if not player.is_playing else "**Queue: **\n"+"\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])),
-				color=discord.Color.from_rgb(255, 255, 255)
+				color=discord.Color.from_rgb(0,255,0)
 				)
 
 				return await ctx.reply(embed=mbed)
@@ -298,7 +305,7 @@ class Music(commands.Cog):
 			try:
 				track = await wavelink.YoutubeTrack.search(query=search, return_first=True)
 			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255, 255, 255)))
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255,0,0)))
 		
 		if not ctx.voice_client:
 			vc: wavelink.Player = await ctx.author.voice.channel(cls=wavelink.Player)
@@ -310,7 +317,7 @@ class Music(commands.Cog):
 			try:
 				await vc.play(track)
 			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255, 255, 255)))
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
 		else:
 			self.queue.append(track)
 		
