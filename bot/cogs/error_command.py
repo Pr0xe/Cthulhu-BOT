@@ -8,7 +8,7 @@ class CommandErrorHandler(commands.Cog):
     async def on_command_error(self, ctx, error):
         try:
             if isinstance(error, commands.CommandNotFound):
-                await ctx.send(f"{ctx.message.author.mention} Command not found")
+                await ctx.reply(f"{ctx.message.author.mention} Command not found")
         except:
             pass
 
