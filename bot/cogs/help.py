@@ -17,7 +17,7 @@ class Help(commands.Cog):
             description = f"Use `{pre}`help <command> for extended information on a command"
         )
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `memes`, `nsfw(+18)`", inline= False)
-        embed_commands.add_field(name="Music", value="`join`, `play`, `pause`, `stop`, `skip`, `queue`, `restart`, `playing`, `leave`", inline= False)
+        embed_commands.add_field(name="Music", value="`join`, `play`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`", inline= False)
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`", inline= False) 
         await ctx.send(embed=embed_commands)
 
