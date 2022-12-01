@@ -254,7 +254,7 @@ class Music(commands.Cog):
 		else:
 			await ctx.reply("Nothing is playing right now")
 	
-	@commands.command(name="skip")
+	@commands.command(name="skip", aliases=['next'])
 	async def skip_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
