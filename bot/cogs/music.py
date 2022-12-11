@@ -5,6 +5,8 @@ import wavelink
 import asyncio
 from discord.ext import commands
 
+TIME_REGEX = r"([0-9]{1,2})[:ms](([0-9]{1,2})s?)?"
+
 class Music(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -26,7 +28,7 @@ class Music(commands.Cog):
 		print(f"Node <{node.identifier}> is now Ready!")
 
 	async def cog_check(self, ctx):
-		song_channel = "692020480353501247"
+		song_channel = "778555669590048798"
 		if str(ctx.channel.id) != (song_channel):
 			await ctx.send("Please go to song channel :arrow_right: <#692020480353501247>")
 			return False
@@ -246,10 +248,20 @@ class Music(commands.Cog):
 			min = int((t_sec%3600)/60)
 			sec = int((t_sec%3600)%60)
 			length = f"{hour}hr {min}min {sec}sec" if not hour == 0 else f"{min}min {sec}sec"
+			
+			pos_sec= int(player.position)
+			pos_hour = int(pos_sec/3600)
+			pos_min = int((pos_sec%3600)/60)
+			pos_sec = int((pos_sec%3600)%60)
+			position = f"{pos_hour}hr {pos_min}min {pos_sec}sec" if not hour == 0 else f"{pos_min}min {pos_sec}sec"
 
 			mbed.add_field(name="Artist", value=player.track.info['author'], inline=False)
 			mbed.add_field(name="Length", value=f"{length}", inline=False)
-
+			mbed.add_field(
+				name="Position",
+				value=f"{position}/{length}",
+				inline=False
+			)
 			return await ctx.reply(embed=mbed)
 		else:
 			await ctx.reply("Nothing is playing right now")
@@ -313,6 +325,25 @@ class Music(commands.Cog):
 			self.queue.append(track)
 		
 		await ctx.reply(embed=discord.Embed(title=f"Added {track.title} to the queue", color=discord.Color.from_rgb(255, 255, 255)))
+
+	@commands.command(name="seek")
+	async def seek(self, ctx: commands.Context, position: str):
+		node = wavelink.NodePool.get_node()
+		player = node.get_player(ctx.guild)
+
+		if not(match := re.match(TIME_REGEX, position)):
+			return await ctx.reply.send("Invalid time entry")
+		if match.group(3):
+			secs = (int(match.group(1)) * 60) + (int(match.group(3)))
+		else:
+			secs = int(match.group(1))
+		await player.seek(secs * 1000)
+
+		mbed = discord.Embed(
+			title=f"Seeked To {position}",
+			color = discord.Color.from_rgb(0, 255, 0)
+		)
+		await ctx.send(embed=mbed)
 
 async def setup(bot):
 	await bot.add_cog(Music(bot)) 
