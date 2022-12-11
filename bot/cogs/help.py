@@ -17,7 +17,7 @@ class Help(commands.Cog):
             description = f"Use `{pre}`help <command> for extended information on a command"
         )
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `memes`, `nsfw(+18)`", inline= False)
-        embed_commands.add_field(name="Music", value="`join`, `play`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`", inline= False)
+        embed_commands.add_field(name="Music", value="`join`, `play`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`, `seek`", inline= False)
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`, `role`, `rmrole`, `crole`, `drole`", inline= False) 
         await ctx.send(embed=embed_commands)
 
@@ -97,6 +97,13 @@ class Help(commands.Cog):
     async def crole(self, ctx):
         embed_commands = discord.Embed(title="crole", description= "Create new role in Server", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">crole <rolename>")
+        await ctx.send(embed=embed_commands)
+    
+    @help.command()
+    async def seek(self, ctx):
+        embed_commands = discord.Embed(title="Seek", description= "Seeking the song to given position", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">seek 1m20")
+        embed_commands.add_field(name="Example 2", value=f">seek 40s")
         await ctx.send(embed=embed_commands)
 
     @help.command()
