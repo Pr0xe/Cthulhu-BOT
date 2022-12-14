@@ -28,7 +28,7 @@ class Music(commands.Cog):
 		print(f"Node <{node.identifier}> is now Ready!")
 
 	async def cog_check(self, ctx):
-		song_channel = "778555669590048798"
+		song_channel = "692020480353501247"
 		if str(ctx.channel.id) != (song_channel):
 			await ctx.send("Please go to song channel :arrow_right: <#692020480353501247>")
 			return False
