@@ -28,7 +28,7 @@ class Music(commands.Cog):
 		print(f"Node <{node.identifier}> is now Ready!")
 
 	async def cog_check(self, ctx):
-		song_channel = "692020480353501247"
+		song_channel = "778555669590048798"
 		if str(ctx.channel.id) != (song_channel):
 			await ctx.send("Please go to song channel :arrow_right: <#692020480353501247>")
 			return False
@@ -331,19 +331,32 @@ class Music(commands.Cog):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
 
-		if not(match := re.match(TIME_REGEX, position)):
-			return await ctx.reply.send("Invalid time entry")
-		if match.group(3):
-			secs = (int(match.group(1)) * 60) + (int(match.group(3)))
-		else:
-			secs = int(match.group(1))
-		await player.seek(secs * 1000)
+		if player is None:
+			return await ctx.reply(embed=discord.Embed(title="Bot not connected to channel.", color=discord.Color.from_rgb(255, 0, 0)))
+		else:	
+			if player.is_playing():
+				if not(match := re.match(TIME_REGEX, position)):
+					return await ctx.reply("Invalid time entry")
+				if match.group(3):
+					secs = (int(match.group(1)) * 60) + (int(match.group(3)))
+				else:
+					secs = int(match.group(1))
+				await player.seek(secs * 1000)
 
-		mbed = discord.Embed(
-			title=f"Seeked To {position}",
-			color = discord.Color.from_rgb(0, 255, 0)
-		)
-		await ctx.send(embed=mbed)
+				mbed = discord.Embed(
+					title=f"Seeked To {position}",
+					color = discord.Color.from_rgb(0, 255, 0)
+				)
+				await ctx.send(embed=mbed)
+			else:
+				return await ctx.reply("Nothing Is playing right now")
+
+	@seek.error
+	async def seek_error(self, ctx, error):
+		if isinstance(error, commands.MissingRequiredArgument):
+			embed=discord.Embed(title="User ERROR", description=f"Please enter time.", color=discord.Color.from_rgb(255, 0, 0))
+			await ctx.repy(embed=embed)
+
 
 async def setup(bot):
 	await bot.add_cog(Music(bot)) 
