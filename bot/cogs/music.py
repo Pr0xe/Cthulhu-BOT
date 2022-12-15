@@ -101,14 +101,14 @@ class Music(commands.Cog):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
 
-		if player is None:
-			await ctx.author.voice.channel.connect(cls=wavelink.Player)
-
 		if search is None:
-			if (len(self.queue)==0) and player.is_paused():
-				await player.resume()
-				return await ctx.reply(embed=discord.Embed(title="Playback resumed :arrow_forward:", color=discord.Color.from_rgb(0,255,0)))
-		
+			return await ctx.reply("Please provide a song to search")	
+
+		if player is None:
+			channel = ctx.author.voice.channel
+			await ctx.author.voice.channel.connect(cls=wavelink.Player)
+			await ctx.send(f"Connected to `{channel.name}`")
+
 		try:
 			tracks = await wavelink.YouTubeTrack.search(query=search)
 		except:
@@ -222,7 +222,7 @@ class Music(commands.Cog):
 		else:
 			if not len(self.queue) == 0:
 				track: wavelink.Track = self.queue[0]
-				player.play(track)
+				await player.play(track)
 				return await ctx.reply(embed=discord.Embed(
 					title=f"Now Playing: {track.title}"))
 			else:
@@ -287,6 +287,7 @@ class Music(commands.Cog):
 			))
 		else:
 			await ctx.reply("The queue is empty")
+			
 	@commands.command(name="queue", aliases=["q"])
 	async def queue_command(self, ctx: commands.Context, *, search=None):
 		node = wavelink.NodePool.get_node()
@@ -296,6 +297,7 @@ class Music(commands.Cog):
 			if not len(self.queue) == 0:
 				mbed = discord.Embed(
 				title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
+				url=f"{player.track.info['uri']}",
 				description = "\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])) 
 					if not player.is_playing else "**Queue: **\n"+"\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])),
 				color=discord.Color.from_rgb(0,255,0)
@@ -356,7 +358,6 @@ class Music(commands.Cog):
 		if isinstance(error, commands.MissingRequiredArgument):
 			embed=discord.Embed(title="User ERROR", description=f"Please enter time.", color=discord.Color.from_rgb(255, 0, 0))
 			await ctx.repy(embed=embed)
-
 
 async def setup(bot):
 	await bot.add_cog(Music(bot)) 
