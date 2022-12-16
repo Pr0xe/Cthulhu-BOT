@@ -18,7 +18,7 @@ class Help(commands.Cog):
         )
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `level`, `board`, `report`, `memes`, `nsfw(+18)`", inline= False)
         embed_commands.add_field(name="Music", value="`join`, `play`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`, `seek`", inline= False)
-        embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="Prefix : `cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`", inline= False) 
+        embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`", inline= False) 
         embed_commands.add_field(name="Role Management - :no_entry: Only for Admins and Owner :no_entry:", value="`role`, `rmrole`, `crole`, `drole`", inline= False)
         embed_commands.add_field(name="Level Management - :no_entry: Only for Admins and Owner :no_entry:", value="`rmlevel`, `cleardb`", inline= False)
         embed_commands.add_field(name="Report Management - :no_entry: Only for Admins and Owner :no_entry:", value="`dreport`, `reports`", inline= False)
