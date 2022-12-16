@@ -39,7 +39,8 @@ class Report(commands.Cog):
         title=":warning: Report Submitted :warning:",
         colour=0xFF0000)
         warn_user = discord.Embed(
-            colour=0x40E0D0)
+            colour=0x40E0D0,
+            timestamp=ctx.message.created_at)
         if not reason:
             await ctx.send(f"{ctx.message.author.mention} Please provide a reason!")
             return
