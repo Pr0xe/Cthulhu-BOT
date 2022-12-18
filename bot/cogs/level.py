@@ -38,8 +38,7 @@ class Levels(commands.Cog):
             return False
         
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        
+    async def on_message(self, ctx): 
         if ctx.author == self.bot.user:
             return
         if ctx.author.id == 922471087407788032:
