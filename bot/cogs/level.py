@@ -42,6 +42,8 @@ class Levels(commands.Cog):
         
         if ctx.author == self.bot.user:
             return
+        if ctx.author.id == 922471087407788032:
+            return
 
         author_id = str(ctx.author.id)
         guild_id = str(ctx.guild.id)
