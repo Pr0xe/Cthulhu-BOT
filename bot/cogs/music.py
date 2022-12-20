@@ -29,6 +29,9 @@ class Music(commands.Cog):
 
 	async def cog_check(self, ctx):
 		song_channel = "692020480353501247"
+		test_channel = "778555669590048798"
+		if str(ctx.channel.id) == (test_channel):
+			return True
 		if str(ctx.channel.id) != (song_channel):
 			await ctx.send("Please go to song channel :arrow_right: <#692020480353501247>")
 			return False
@@ -100,15 +103,20 @@ class Music(commands.Cog):
 	async def play_command(self, ctx, *, search: t.Optional[str]):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-
-		if search is None:
-			return await ctx.reply("Please provide a song to search")	
-
+		
 		if player is None:
 			channel = ctx.author.voice.channel
 			await ctx.author.voice.channel.connect(cls=wavelink.Player)
 			await ctx.send(f"Connected to `{channel.name}`")
 
+		if search is None:
+			if player.is_paused():
+				await player.resume()
+				mbed = discord.Embed(title="Playback resumed :arrow_forward:", color=discord.Color.from_rgb(0,255,0))
+				return await ctx.send(embed=mbed)
+			else:
+				return await ctx.reply("Please provide a song to search")	
+		
 		try:
 			tracks = await wavelink.YouTubeTrack.search(query=search)
 		except:
