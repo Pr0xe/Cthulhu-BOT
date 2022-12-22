@@ -301,40 +301,19 @@ class Music(commands.Cog):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
 		
-		if search is None:
-			if not len(self.queue) == 0:
-				mbed = discord.Embed(
-				title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
-				url=f"{player.track.info['uri']}",
-				description = "\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])) 
-					if not player.is_playing else "**Queue: **\n"+"\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])),
-				color=discord.Color.from_rgb(0,255,0)
-				)
+		if not len(self.queue) == 0:
+			mbed = discord.Embed(
+			title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
+			url=f"{player.track.info['uri']}",
+			description = "\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])) 
+				if not player.is_playing else "**Queue: **\n"+"\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])),
+			color=discord.Color.from_rgb(0,255,0)
+			)
 
-				return await ctx.reply(embed=mbed)
-			else:
-				return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
+			return await ctx.reply(embed=mbed)
 		else:
-			try:
-				track = await wavelink.YoutubeTrack.search(query=search, return_first=True)
-			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255,0,0)))
-		
-		if not ctx.voice_client:
-			vc: wavelink.Player = await ctx.author.voice.channel(cls=wavelink.Player)
-			await player.connect(ctx.author.voice.channel)
-		else:
-			vc: wavelink.Player = ctx.voice_client
-		
-		if not vc.is_playing():
-			try:
-				await vc.play(track)
-			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
-		else:
-			self.queue.append(track)
-		
-		await ctx.reply(embed=discord.Embed(title=f"Added {track.title} to the queue", color=discord.Color.from_rgb(255, 255, 255)))
+			return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
+	
 
 	@commands.command(name="seek")
 	async def seek(self, ctx: commands.Context, position: str):
