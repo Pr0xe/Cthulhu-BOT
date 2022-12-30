@@ -23,4 +23,5 @@ BYE_CHANNEL = <channel_id>
 WELCOME_CHANNEL = <channel_id>
 TEST_CHANNEL = <channel_id>" >> constants.py
 ```
-**Then you fill the .py file as the example and BOT is ready to play**
+**Then you fill the .py file as the example**
+## Read Carefully before you continue [here](https://github.com/Pr0xe/Cthulhu-BOT/tree/master/data)
