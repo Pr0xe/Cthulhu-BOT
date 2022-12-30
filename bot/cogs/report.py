@@ -10,6 +10,7 @@ from discord import Embed, Member
 from discord.ext.commands.errors import MissingRequiredArgument
 from termcolor import colored
 import re
+import constants
 
 nest_asyncio.apply()
 
@@ -34,7 +35,7 @@ class Report(commands.Cog):
 
     @commands.command(pass_context = True, aliases=['rep'])
     async def report(self, ctx, member: discord.Member, *reason:str):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         warn_embed = discord.Embed(
         title=":warning: Report Submitted :warning:",
         colour=0xFF0000)
@@ -60,7 +61,7 @@ class Report(commands.Cog):
             warn_user.set_footer(text=f"Requested by {ctx.author}")
             await ctx.send(embed=warn_user)
         
-        channel = self.bot.get_channel(1053372981713309718)
+        channel = self.bot.get_channel(constants.REPORT_CHANNEL)
         warn_embed.add_field(name="Report Status", value=f"{ctx.message.author.mention} reported the user {member.mention}", inline=False)
         await log_channel.send(f"{ctx.message.author.mention} reported the user {member.mention}")
         warn_embed.add_field(name="Reason", value=reason, inline=False)

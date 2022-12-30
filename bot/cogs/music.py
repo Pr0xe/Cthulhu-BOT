@@ -4,6 +4,7 @@ import typing as t
 import wavelink
 import asyncio
 from discord.ext import commands
+import constants
 
 TIME_REGEX = r"([0-9]{1,2})[:ms](([0-9]{1,2})s?)?"
 
@@ -28,12 +29,12 @@ class Music(commands.Cog):
 		print(f"Node <{node.identifier}> is now Ready!")
 
 	async def cog_check(self, ctx):
-		song_channel = "692020480353501247"
-		test_channel = "778555669590048798"
+		song_channel = f"{constants.SONG_CHANNEL}"
+		test_channel = f"{constants.TEST_CHANNEL}"
 		if str(ctx.channel.id) == (test_channel):
 			return True
 		if str(ctx.channel.id) != (song_channel):
-			await ctx.send("Please go to song channel :arrow_right: <#692020480353501247>")
+			await ctx.send(f"Please go to song channel :arrow_right: <#{constants.SONG_CHANNEL}>")
 			return False
 		return True
 	

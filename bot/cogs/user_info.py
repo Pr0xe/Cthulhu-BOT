@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands
 from discord import Embed, Member
- 
+import constants 
+
 class User_info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     @commands.command(pass_context=True, aliases=['whoami','who'])
     async def user_info(self, ctx, member: discord.Member = None):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         if not member:
             member = ctx.author
         

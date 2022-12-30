@@ -4,6 +4,7 @@ from discord.utils import get
 from discord.ext import commands
 from discord.ext.commands import Cog
 from discord import Embed, Member
+import constants
 
 pr0xe_id = '<@188771015751368704>'
 
@@ -13,7 +14,7 @@ class BotInfo(commands.Cog):
         
     @commands.command(pass_context=True, name="BOT Info",aliases=['bot'])
     async def bot(self, ctx):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
         title="BOT information",
         colour=0x1167B1,

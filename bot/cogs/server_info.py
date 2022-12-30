@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import Embed, Member
+import constants
 
 class ServerInfo(commands.Cog):
     def __init__(self, bot):
@@ -8,7 +9,7 @@ class ServerInfo(commands.Cog):
 
     @commands.command(pass_context=True, name="Server Info", aliases=['server'])
     async def server(self, ctx):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
             title="Server informations",
             colour=discord.Color.random(),

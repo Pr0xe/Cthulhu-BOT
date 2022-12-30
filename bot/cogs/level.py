@@ -7,6 +7,7 @@ from termcolor import colored
 from discord import embeds
 from discord.ext import commands
 from discord import Embed, Member
+import constants
 
 class Levels(commands.Cog):
     def __init__(self, bot):
@@ -41,8 +42,6 @@ class Levels(commands.Cog):
     async def on_message(self, ctx): 
         if ctx.author == self.bot.user:
             return
-        if ctx.author.id == 922471087407788032:
-            return
 
         author_id = str(ctx.author.id)
         guild_id = str(ctx.guild.id)
@@ -56,7 +55,7 @@ class Levels(commands.Cog):
         await self.pg_con.execute("UPDATE levels SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
        
         if await self.level_up(user):
-            channel = self.bot.get_channel(1053390371989753948)
+            channel = self.bot.get_channel(constants.LEVEL_CHANNEL)
             embed=discord.Embed(title=f":tada: Level Up :tada:", description="**{0}** is level **{1}** :star:".format(ctx.author.mention, user['level'] + 1), color=0x00ffff)
             await channel.send(embed=embed)
         

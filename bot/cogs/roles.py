@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord import Embed, Member
 from discord.utils import get
 from discord.ext.commands import has_permissions
+import constants 
 
 class Roles(commands.Cog):
     def __init__(self, bot):
@@ -28,7 +29,7 @@ class Roles(commands.Cog):
     @has_permissions(manage_roles=True)
     async def create_role(self, ctx,* ,_role ):
         guild = ctx.guild
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         if get(guild.roles, name=_role):
             embed=discord.Embed(title="Role ERROR", description=f"{ctx.message.author.mention} this role already exist", color=0xff0000)
             await ctx.send(embed=embed)
@@ -50,7 +51,7 @@ class Roles(commands.Cog):
     @commands.command(pass_context = True)
     @has_permissions(manage_roles=True)
     async def drole(self, ctx, *, role: discord.Role):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         if role is None:
             embed=discord.Embed(title="Remove Role Error", description=f"{ctx.message.author.mention} Please add a role", color=0xff0000)
             await ctx.send(embed=embed)
@@ -69,7 +70,7 @@ class Roles(commands.Cog):
     @commands.command(pass_context = True, aliases=['role'])
     @has_permissions(manage_roles=True)
     async def addrole(self, ctx, role: discord.Role, user: discord.Member):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         if role in user.roles:
             embed=discord.Embed(title="Add Role Error", description=f"{user.mention} already have this role {role.mention}", color=0xff0000)
             await ctx.send(embed=embed)

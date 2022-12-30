@@ -2,6 +2,7 @@ from logging import log
 import discord
 from discord.ext import commands
 from discord import Embed, Member
+import constants
 
 class BanKick(commands.Cog):
     def __init__(self,bot):
@@ -10,7 +11,7 @@ class BanKick(commands.Cog):
     @commands.command(pass_context = True)
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
         title="User Status",
         colour=0xFF0000)
@@ -54,7 +55,7 @@ class BanKick(commands.Cog):
     @commands.command(pass_context = True, name ='kick')
     @commands.has_permissions(kick_members = True)
     async def kick(self, ctx, user: discord.Member, *, reason=None):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
         title="User Status",
         colour=0xFFF200)

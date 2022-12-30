@@ -16,7 +16,6 @@ class Reddit(commands.Cog):
     @commands.command(pass_context = True, aliases=['horny'])
     async def nsfw(self, ctx, subred="nsfw"):
         if ctx.channel.is_nsfw():
-            log_channel = self.bot.get_channel(900492686581178398)
             subbs = []
             
             hot_submissions = self.reddit.subreddit(subred).hot(limit=25)
@@ -28,7 +27,6 @@ class Reddit(commands.Cog):
             url = random_pick.url
             
             await ctx.send(f"{name}\n{url}")
-            await log_channel.send(f"nsfw posted : requested by {ctx.author}")
 
         else:
             embed=discord.Embed(title=":x: Channel Error", description=f"{ctx.message.author.mention} You need to be in NSFW channel to use this command", color=0xff00f6)
@@ -38,7 +36,6 @@ class Reddit(commands.Cog):
     @commands.command(pass_context = True, aliases=['meme'])
     async def memes(self, ctx):
         if not ctx.channel.is_nsfw():
-            log_channel = self.bot.get_channel(900492686581178398)
             subbs = []
             
             hot_submissions = self.reddit.subreddit("memes").hot(limit=25)
@@ -50,7 +47,6 @@ class Reddit(commands.Cog):
             url = random_pick.url
             
             await ctx.send(f"{name}\n{url}")
-            await log_channel.send(f"meme posted : requested by {ctx.author}")
         else:
             embed=discord.Embed(title=":x: Channel Error", description=f"{ctx.message.author.mention} You are in NSFW channel. Try command away from here!", color=0xff00f6)
             await ctx.send(embed=embed)
