@@ -31,7 +31,6 @@ class Reddit(commands.Cog):
         else:
             embed=discord.Embed(title=":x: Channel Error", description=f"{ctx.message.author.mention} You need to be in NSFW channel to use this command", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("nsfw channel error")
     
     @commands.command(pass_context = True, aliases=['meme'])
     async def memes(self, ctx):
@@ -50,7 +49,6 @@ class Reddit(commands.Cog):
         else:
             embed=discord.Embed(title=":x: Channel Error", description=f"{ctx.message.author.mention} You are in NSFW channel. Try command away from here!", color=0xff00f6)
             await ctx.send(embed=embed)
-            print("nsfw channel error")
 
 async def setup(bot):
     await bot.add_cog(Reddit(bot))
