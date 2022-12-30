@@ -2,5 +2,7 @@ data/*.json
 *.json
 cogs/__pycache__/*.pyc
 bot/cogs/__pycache__/*.pyc
-bot/__pycache__/*.pyc
+bot/__pycache__/*
+__pycache__
+.vscode
 constants.py

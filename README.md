@@ -7,3 +7,20 @@
 
 ## Link
 [Click here](https://discord.com/oauth2/authorize?client_id=766607810943123466&permissions=1610312822&scope=bot) to add **Cthulhu** to a server, provided that you have the `Manage Server` permission.
+
+## MUST SEE
+```bash 
+$ git clone https://github.com/Pr0xe/Cthulhu-BOT.git
+$ cd Cthulhu-BOT
+$ pip install -r requirements.txt
+$ echo "
+# example -> LOG CHANNEL = 4654931736594316598
+LOG_CHANNEL = <channel_id>
+REPORT_CHANNEL = <channel_id>
+SONG_CHANNEL = <channel_id>
+LEVEL_CHANNEL = <channel_id>
+BYE_CHANNEL = <channel_id>
+WELCOME_CHANNEL = <channel_id>
+TEST_CHANNEL = <channel_id>" >> constants.py
+```
+**Then you fill the .py file as the example and BOT is ready to play**
