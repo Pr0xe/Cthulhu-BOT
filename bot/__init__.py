@@ -9,6 +9,7 @@ from discord import client
 from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
 from termcolor import colored
+import constants
 
 COGS = [path.split("\\")[-1][:-3] for path in glob("./bot/cogs/*.py")]
 
@@ -46,7 +47,7 @@ class Bot(BotBase):
             await self.load_extension(f"bot.cogs.{cog}")
             print((colored(f"{cog} LOADED!", 'green')))
         if not self.synced:
-            await bot.tree.sync(guild=discord.Object(id=392363941931515904))
+            await bot.tree.sync(guild=discord.Object(id=constants.SERVER_ID))
             self.synced = True
         print("setup completed")
     
@@ -59,26 +60,26 @@ class Bot(BotBase):
         super().run(self.token["token"], reconnect=True)
     
     async def on_ready(self):
-        channel = bot.get_channel(900492686581178398)
+        channel = bot.get_channel(constants.LOG_CHANNEL)
         print(colored(f'Cthulhu has connected to Discord!', 'red'))
         await bot.change_presence(activity=discord.Game(name="?help"))
         await channel.send(f'`{self.user} has connected to Discord!`')
 
     async def on_member_join(self, member):
-        channel = bot.get_channel(784492565239037973)
-        log_channel = bot.get_channel(900492686581178398)
+        channel = bot.get_channel(constants.WELCOME_CHANNEL)
+        log_channel = bot.get_channel(constants.LOG_CHANNEL)
         user_embed = discord.Embed(
             colour=(discord.Colour.magenta()),
             title=':partying_face: Welcome :partying_face:',
             description=f'{member.mention} Welcome to **{member.guild.name}** Server !!'
         )
         await channel.send(embed=user_embed)
-        role = discord.utils.get(member.guild.roles, id=1012388618762997800)
+        role = discord.utils.get(member.guild.roles, id=constants.CUSTOM_ON_JOIN_ROLE_ID)
         await member.add_roles(role)
         await log_channel.send(f"{member} joined the server")
 
     async def on_member_remove(self, member):
-        channel = bot.get_channel(825767793102291024)
+        channel = bot.get_channel(constants.BYE_CHANNEL)
         bye_embed = discord.Embed(
             color=0x737373,
             title=':cross: Goodbye :cross:',
