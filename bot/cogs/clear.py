@@ -29,10 +29,6 @@ class Clear(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Bad Syntax", color=0xff00f6)
             await ctx.send(embed=embed)
-        elif isinstance(error, commands.CommandInvokeError):
-            embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Cannot delete more than `100 messages` or `14 days old`", color=0xff00f6)
-            await ctx.send(embed=embed)
-            print(error)
-            
+
 async def setup(bot):
     await bot.add_cog(Clear(bot))
