@@ -25,4 +25,5 @@ TEST_CHANNEL = <channel_id>
 SERVER_ID = 392363941931515904
 CUSTOM_ON_JOIN_ROLE_ID = 1012388618762997800" >> constants.py
 ```
-**Then you fill the .py file as the example and BOT is ready to play**
+**Then you fill the .py file as the example**
+## Read Carefully before you continue [here](https://github.com/Pr0xe/Cthulhu-BOT/tree/master/data)
