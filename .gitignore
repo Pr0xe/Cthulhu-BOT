@@ -1,4 +1,5 @@
 data/*.json
+!data/.gitkeep
 *.json
 cogs/__pycache__/*.pyc
 bot/cogs/__pycache__/*.pyc
