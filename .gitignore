@@ -1,7 +1,6 @@
-.*
+data/*.json
 !data/.*
 !data/.gitkeep
-*.json
 cogs/__pycache__/*.pyc
 bot/cogs/__pycache__/*.pyc
 bot/__pycache__/*
