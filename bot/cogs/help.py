@@ -17,7 +17,7 @@ class Help(commands.Cog):
             description = f"Use `{pre}`help <command> for extended information on a command"
         )
         embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `level`, `board`, `report`, `memes`, `nsfw(+18)`", inline= False)
-        embed_commands.add_field(name="Music", value="`join`, `play`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`, `seek`", inline= False)
+        embed_commands.add_field(name="Music", value="`join`, `play`, `playlist`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`, `seek`", inline= False)
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`", inline= False) 
         embed_commands.add_field(name="Role Management - :no_entry: Only for Admins and Owner :no_entry:", value="`role`, `rmrole`, `crole`, `drole`", inline= False)
         embed_commands.add_field(name="Level Management - :no_entry: Only for Admins and Owner :no_entry:", value="`rmlevel`, `cleardb`", inline= False)
@@ -28,6 +28,12 @@ class Help(commands.Cog):
     async def join(self, ctx):
         embed_commands = discord.Embed(title="Join", description= "Bot joining voice channel when you are already in voice channel", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">join")
+        await ctx.send(embed=embed_commands)
+    
+    @help.command()
+    async def playlist(self, ctx):
+        embed_commands = discord.Embed(title="Playlist", description= "Bot accepts only playlist link from Youtube", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">playlist <link>")
         await ctx.send(embed=embed_commands)
 
     @help.command()

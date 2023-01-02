@@ -57,7 +57,7 @@ class Music(commands.Cog):
 		if str(reason) == "FINISHED":
 			if not len(self.queue) == 0:
 				next_track: wavelink.Track = self.queue[0]
-				channel = self.bot.get_channel(692020480353501247)
+				channel = self.bot.get_channel(constants.SONG_CHANNEL)
 
 				try:
 					await player.play(next_track)
@@ -116,70 +116,107 @@ class Music(commands.Cog):
 				mbed = discord.Embed(title="Playback resumed :arrow_forward:", color=discord.Color.from_rgb(0,255,0))
 				return await ctx.send(embed=mbed)
 			else:
-				return await ctx.reply("Please provide a song to search")	
-		
-		try:
-			tracks = await wavelink.YouTubeTrack.search(query=search)
-		except:
-			return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255,0,0)))
-
-		if tracks is None:
-			return await ctx.reply("No tracks found")
-
-		mbed = discord.Embed(
-			title="Select the track: ",
-			description=("\n".join(f"**{i+1}. {t.title}**" for i, t in enumerate(tracks[:5]))),
-			color = discord.Color.from_rgb(255, 255, 255)
-		)
-		msg = await ctx.reply(embed=mbed)
-
-		emojis_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '❌']
-		emojis_dict = {
-			'1️⃣': 0,
-			"2️⃣": 1,
-			"3️⃣": 2,
-			"4️⃣": 3,
-			"5️⃣": 4,
-			"❌": -1
-		}
-
-		for emoji in list(emojis_list[:min(len(tracks), len(emojis_list))]):
-			await msg.add_reaction(emoji)
-
-		def check(res, user):
-			return(res.emoji in emojis_list and user == ctx.author and res.message.id == msg.id)
-
-		try:
-			reaction, _ = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
-		except asyncio.TimeoutError:
-			await msg.delete()
-			return
+				return await ctx.reply("Please provide a song to search")
 		else:
-			await msg.delete()
-
-		try:
-			if emojis_dict[reaction.emoji] == -1: return
-			choosed_track = tracks[emojis_dict[reaction.emoji]]
-		except:
-			return
-	
-		if not ctx.voice_client:
-			vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
-		else:
-			vc: wavelink.Player = ctx.voice_client
-
-		if not vc.is_playing():
 			try:
-				await vc.play(choosed_track)
+				tracks = await wavelink.YouTubeTrack.search(query=search)
 			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
-		else:
-			self.queue.append(choosed_track)
-		mbed = discord.Embed(
-				title=f"Added {choosed_track} To the queue",
-				color=discord.Color.from_rgb(255, 255, 255)
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255,0,0)))
+
+			if tracks is None:
+				return await ctx.reply("No tracks found")
+
+			mbed = discord.Embed(
+				title="Select the track: ",
+				description=("\n".join(f"**{i+1}. {t.title}**" for i, t in enumerate(tracks[:5]))),
+				color = discord.Color.from_rgb(255, 255, 255)
 			)
-		await ctx.send(embed=mbed)
+			msg = await ctx.reply(embed=mbed)
+
+			emojis_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '❌']
+			emojis_dict = {
+				'1️⃣': 0,
+				"2️⃣": 1,
+				"3️⃣": 2,
+				"4️⃣": 3,
+				"5️⃣": 4,
+				"❌": -1
+			}
+
+			for emoji in list(emojis_list[:min(len(tracks), len(emojis_list))]):
+				await msg.add_reaction(emoji)
+
+			def check(res, user):
+				return(res.emoji in emojis_list and user == ctx.author and res.message.id == msg.id)
+
+			try:
+				reaction, _ = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+			except asyncio.TimeoutError:
+				await msg.delete()
+				return
+			else:
+				await msg.delete()
+
+			try:
+				if emojis_dict[reaction.emoji] == -1: return
+				choosed_track = tracks[emojis_dict[reaction.emoji]]
+			except:
+				return
+		
+			if not ctx.voice_client:
+				vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+			else:
+				vc: wavelink.Player = ctx.voice_client
+
+			if not vc.is_playing():
+				try:
+					await vc.play(choosed_track)
+				except:
+					return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
+			else:
+				self.queue.append(choosed_track)
+			mbed = discord.Embed(
+					title=f"Added {choosed_track} To the queue",
+					color=discord.Color.from_rgb(255, 255, 255)
+				)
+			await ctx.send(embed=mbed)
+	
+	@commands.command(name="playlist")
+	async def playlist_command(self, ctx, *, search: wavelink.YouTubePlaylist):
+		node = wavelink.NodePool.get_node()
+		player = node.get_player(ctx.guild)
+		
+		if player is None:
+			channel = ctx.author.voice.channel
+			await ctx.author.voice.channel.connect(cls=wavelink.Player)
+			await ctx.send(f"Connected to `{channel.name}`")
+
+		if search is None:
+			return await ctx.reply("Please provide a playlist link")
+		else:
+			if not ctx.voice_client:
+				vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+			else:
+				vc: wavelink.Player = ctx.voice_client
+
+			self.queue.clear()
+			if vc.is_playing():
+				await vc.stop();
+			for songs in search.tracks:
+				self.queue.append(songs)
+			
+			if not vc.is_playing():
+				next_track: wavelink.Track = self.queue[0]
+				try:
+					await vc.play(next_track)
+				except:
+					return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
+			mbed = discord.Embed(
+					title=f"{search}",
+					description = f"Playlist with `{len(self.queue)} songs` added",
+					color=discord.Color.from_rgb(255, 255, 255)
+				)
+			await ctx.send(embed=mbed)
 
 	@commands.command(name="stop")
 	async def stop_command(self, ctx):
@@ -304,13 +341,12 @@ class Music(commands.Cog):
 		
 		if not len(self.queue) == 0:
 			mbed = discord.Embed(
-			title=f"Now playing: {player.track}" if player.is_playing else "Queue: ",
+			title=f"Now playing: {player.track}" if player.is_playing else f"Queue: ",
 			url=f"{player.track.info['uri']}",
 			description = "\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])) 
-				if not player.is_playing else "**Queue: **\n"+"\n".join(f"**{i+1}. {track}**" for i, track in enumerate(self.queue[:10])),
+				if not player.is_playing else f"**Queue: `{len(self.queue)} total songs`**\n"+"\n".join(f"**{i+1}.** {track}" for i, track in enumerate(self.queue[:10])),
 			color=discord.Color.from_rgb(0,255,0)
 			)
-
 			return await ctx.reply(embed=mbed)
 		else:
 			return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
