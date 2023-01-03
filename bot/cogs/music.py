@@ -98,6 +98,7 @@ class Music(commands.Cog):
 			return await ctx.send(f"{ctx.author.mention}, Bot is not connected to any channel")
 
 		await player.disconnect()
+		self.queue.clear()
 		await ctx.send(f"Disconnected :wave:")
 
 	@commands.command(name="play", aliases=['p'])
