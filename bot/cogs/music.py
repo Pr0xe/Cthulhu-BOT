@@ -339,7 +339,13 @@ class Music(commands.Cog):
 	async def queue_command(self, ctx: commands.Context, *, search=None):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-		
+		if search == "clear":
+			if len(self.queue)==0:
+				return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
+			else:
+				self.queue.clear()
+				return await ctx.reply(embed=discord.Embed(title="Queue cleared successfully", color=discord.Color.from_rgb(0, 255, 0)))
+
 		if not len(self.queue) == 0:
 			mbed = discord.Embed(
 			title=f"Now playing: {player.track}" if player.is_playing else f"Queue: ",

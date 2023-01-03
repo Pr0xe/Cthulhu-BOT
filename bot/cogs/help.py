@@ -192,6 +192,7 @@ class Help(commands.Cog):
     async def queue(self, ctx):
         embed_commands = discord.Embed(title="Queue", description= "Print list of Queue", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">queue or q")
+        embed_commands.add_field(name="**Clear queue", value=f">queue or q clear")
         await ctx.send(embed=embed_commands)
     
     @help.command()
