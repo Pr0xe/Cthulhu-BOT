@@ -61,7 +61,7 @@ class Bot(BotBase):
     
     async def on_ready(self):
         channel = bot.get_channel(constants.LOG_CHANNEL)
-        print(colored(f'Cthulhu has connected to Discord!', 'red'))
+        print(colored(f'Cthulhu has connected to Discord!', 'green'))
         await bot.change_presence(activity=discord.Game(name="?help"))
         await channel.send(f'`{self.user} has connected to Discord!`')
 

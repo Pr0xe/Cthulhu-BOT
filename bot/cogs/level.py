@@ -16,7 +16,7 @@ class Levels(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.pg_con.execute("CREATE TABLE IF NOT EXISTS warnlogs (user_id character varying(100), report TEXT[])")
+        await self.pg_con.execute("CREATE TABLE IF NOT EXISTS levels (user_id character varying, guild_id character varying, level int, xp int)")
         print("leveling system ready") 
 
     async def create_db_pool(self):
