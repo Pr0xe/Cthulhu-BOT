@@ -40,10 +40,10 @@ class Music(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_voice_state_update(self, member, before, after):
-		node = wavelink.NodePool.get_node()
 		if not member.bot and after.channel is None:
+			voice  = discord.utils.get(self.bot.voice_clients)
 			if not [m for m in before.channel.members if not m.bot]:
-				await node.get_player(member.guild).disconnect()
+				await voice.disconnect()
 
 	@commands.Cog.listener()
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
@@ -84,7 +84,7 @@ class Music(commands.Cog):
 		
 		if player is not None:
 			if player.is_connected():
-				return await ctx.send(f"{ctx.author.mention} BOT is already connected to a voice channel")
+				return await ctx.reply(f"BOT is already connected to a voice channel")
 
 		await channel.connect(cls=wavelink.Player)
 		await ctx.send(f"Connected to {channel.name}.")
@@ -105,7 +105,7 @@ class Music(commands.Cog):
 	async def play_command(self, ctx, *, search: t.Optional[str]):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-		
+
 		if player is None:
 			channel = ctx.author.voice.channel
 			await ctx.author.voice.channel.connect(cls=wavelink.Player)
@@ -186,7 +186,7 @@ class Music(commands.Cog):
 	async def playlist_command(self, ctx, *, search: wavelink.YouTubePlaylist):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-		
+
 		if player is None:
 			channel = ctx.author.voice.channel
 			await ctx.author.voice.channel.connect(cls=wavelink.Player)
