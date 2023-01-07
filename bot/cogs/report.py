@@ -62,7 +62,7 @@ class Report(commands.Cog):
             await ctx.send(embed=warn_user)
         
         channel = self.bot.get_channel(constants.REPORT_CHANNEL)
-        warn_embed.add_field(name="Report Status", value=f"{ctx.message.author} created a report for user : {member.name}", inline=False)
+        warn_embed.add_field(name="Report Status", value=f"{ctx.message.author.mention} created a report for user : {member.mention}", inline=False)
         await log_channel.send(f"{ctx.message.author} reported the user {member.name}")
         warn_embed.add_field(name="Reason", value=reason, inline=False)
         await channel.send(embed=warn_embed)
