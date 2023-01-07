@@ -78,6 +78,11 @@ class Music(commands.Cog):
 
 	@commands.command(name="connect", aliases=["join"])
 	async def connect_command(self, ctx, *, channel: t.Optional[discord.VoiceChannel]):
+		voice_state = ctx.author.voice
+
+		if voice_state is None:
+			return await ctx.reply("You need to be in a voice channel to use this command")
+
 		if channel is None:
 			channel = ctx.author.voice.channel
 
@@ -97,7 +102,7 @@ class Music(commands.Cog):
 		player = node.get_player(ctx.guild)
 
 		if player is None:
-			return await ctx.send(f"{ctx.author.mention}, Bot is not connected to any channel")
+			return await ctx.reply(f"BOT is not connected to any channel")
 
 		await player.disconnect()
 		self.queue.clear()
@@ -241,7 +246,7 @@ class Music(commands.Cog):
 		player = node.get_player(ctx.guild)
 
 		if player is None:
-			return await ctx.send("Bot is not connected to any voice channel")
+			return await ctx.send("BOT is not connected to any voice channel")
 		
 		self.queue.clear()
 
@@ -258,7 +263,7 @@ class Music(commands.Cog):
 		player = node.get_player(ctx.guild) 
 
 		if player is None:
-			return await ctx.send("Bot is not connected to any voice channel")
+			return await ctx.send("BOT is not connected to any voice channel")
 
 		if not player.is_paused():
 			if player.is_playing():
@@ -276,7 +281,7 @@ class Music(commands.Cog):
 		player = node.get_player(ctx.guild)
 
 		if player is None:
-			return await ctx.send("Bot is not connected to any voice channel")
+			return await ctx.send("BOT is not connected to any voice channel")
 		
 		if player.is_paused():
 			await player.resume()
@@ -297,7 +302,7 @@ class Music(commands.Cog):
 		player = node.get_player(ctx.guild)
 		
 		if player is None:
-			return await ctx.reply("Bot is not connected to any voice channel")
+			return await ctx.reply("BOT is not connected to any voice channel")
 
 		if player.is_playing():
 			mbed = discord.Embed(
@@ -381,7 +386,7 @@ class Music(commands.Cog):
 		player = node.get_player(ctx.guild)
 
 		if player is None:
-			return await ctx.reply(embed=discord.Embed(title="Bot not connected to channel.", color=discord.Color.from_rgb(255, 0, 0)))
+			return await ctx.reply(embed=discord.Embed(title="BOT not connected to channel.", color=discord.Color.from_rgb(255, 0, 0)))
 		else:	
 			if player.is_playing():
 				if not(match := re.match(TIME_REGEX, position)):

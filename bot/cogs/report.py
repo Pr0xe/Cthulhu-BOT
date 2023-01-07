@@ -91,7 +91,7 @@ class Report(commands.Cog):
                 colour=0xFFFFFF)
             member_id = str(member.id)
             await self.pg_con.execute("DELETE FROM reports WHERE user_id = $1", member_id)
-            drep_embed.add_field(name="Reports Cleared", value=f"{ctx.message.author} removed reports for user:  {member.name}", inline=False)
+            drep_embed.add_field(name="Reports Cleared", value=f"{ctx.message.author.mention} removed reports for user:  {member.name}", inline=False)
             await ctx.send(embed=drep_embed)
        
     @dreport.error
@@ -132,11 +132,11 @@ class Report(commands.Cog):
             return
         else:
             rows = await self.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
-            clean_rows = re.findall(r"'([^']+)'", str(rows))
+            clean_rows = "\n".join(re.findall(r"'([^']+)'", str(rows)))
             rep_embed = discord.Embed(
                 title=f"User report history - {member}",
                 colour=0xFFFFFF)
-            rep_embed.add_field(name="Report messages", value=f"{str(clean_rows)}", inline=False)
+            rep_embed.add_field(name=f"Report messages", value=f"{str(clean_rows)}", inline=False)
             await ctx.send(embed=rep_embed)
             return
     
