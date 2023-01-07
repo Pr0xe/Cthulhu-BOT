@@ -24,7 +24,7 @@ class User_info(commands.Cog):
             ("Username", name),
             ("Created Account On:", member.created_at.strftime("%#d %B %Y")),
             ("Joined Server On:", member.joined_at.strftime("%#d %B %Y")),
-            ("Roles:", "".join([role.mention for role in roles])),
+            ("Roles:", " ".join([role.mention for role in roles])),
             ("Highest Role:", member.top_role.mention),
         ]
         for name, value in fields:

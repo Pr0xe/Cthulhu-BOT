@@ -24,11 +24,11 @@ class BanKick(commands.Cog):
     @ban.error
     async def ban_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description="{ctx.message.author.mention} No permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="{ctx.message.author.mention} No permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff0000)
+            await ctx.reply(embed=embed)
 
     @commands.command(pass_context = True)
     @commands.has_permissions(ban_members=True)
@@ -46,11 +46,11 @@ class BanKick(commands.Cog):
     @unban.error
     async def unban_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description="{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
+            await ctx.reply(embed=embed)
 
     @commands.command(pass_context = True, name ='kick')
     @commands.has_permissions(kick_members = True)
@@ -68,11 +68,11 @@ class BanKick(commands.Cog):
     @kick.error
     async def kick_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Arguments Missing", description=f"Specify the user", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
+            await ctx.reply(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(BanKick(bot))            

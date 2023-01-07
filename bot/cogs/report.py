@@ -43,7 +43,7 @@ class Report(commands.Cog):
             colour=0x40E0D0,
             timestamp=ctx.message.created_at)
         if not reason:
-            await ctx.send(f"{ctx.message.author.mention} Please provide a reason!")
+            await ctx.reply("Please provide a reason!")
             return
         reason = ' '.join(reason)
         member_id = str(member.id)
@@ -62,16 +62,16 @@ class Report(commands.Cog):
             await ctx.send(embed=warn_user)
         
         channel = self.bot.get_channel(constants.REPORT_CHANNEL)
-        warn_embed.add_field(name="Report Status", value=f"{ctx.message.author.mention} reported the user {member.mention}", inline=False)
-        await log_channel.send(f"{ctx.message.author.mention} reported the user {member.mention}")
+        warn_embed.add_field(name="Report Status", value=f"{ctx.message.author} created a report for user : {member.name}", inline=False)
+        await log_channel.send(f"{ctx.message.author} reported the user {member.name}")
         warn_embed.add_field(name="Reason", value=reason, inline=False)
         await channel.send(embed=warn_embed)
         
     @report.error
     async def report_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Arguments Missing", description=f"{ctx.message.author.mention} Specify the user", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
+            await ctx.reply(embed=embed)
     
     @commands.command(pass_context = True, aliases=['drep'])
     @commands.has_permissions(kick_members=True)
@@ -82,7 +82,7 @@ class Report(commands.Cog):
         member_id = str(member.id)
         user = await self.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
         if not user:
-            drep_embed.add_field(name="Reports not found", value=f"{member.mention} Seems to be clear!", inline=False)
+            drep_embed.add_field(name="Reports not found", value=f"{member} has clear record", inline=False)
             await ctx.send(embed=drep_embed)
             return
         else:
@@ -91,17 +91,17 @@ class Report(commands.Cog):
                 colour=0xFFFFFF)
             member_id = str(member.id)
             await self.pg_con.execute("DELETE FROM reports WHERE user_id = $1", member_id)
-            drep_embed.add_field(name="Reports Cleared", value=f"{ctx.message.author.mention} removed reports from {member.mention}", inline=False)
+            drep_embed.add_field(name="Reports Cleared", value=f"{ctx.message.author} removed reports for user:  {member.name}", inline=False)
             await ctx.send(embed=drep_embed)
        
     @dreport.error
     async def dreport_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Missing User", description=f"{ctx.message.author.mention} Specify the user!", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Missing User", description="Specify the user!", color=0xff0000)
+            await ctx.reply(embed=embed)
 
     @commands.command(pass_context = True)
     @commands.has_permissions(ban_members=True)
@@ -127,7 +127,7 @@ class Report(commands.Cog):
         member_id = str(member.id)
         user = await self.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
         if not user:
-            drep_embed.add_field(name="Reports not found", value=f"{member.mention} Seems to be clear!", inline=False)
+            drep_embed.add_field(name="Reports not found", value=f"{member.name} has clear record", inline=False)
             await ctx.send(embed=drep_embed)
             return
         else:
@@ -143,10 +143,10 @@ class Report(commands.Cog):
     @reports.error
     async def reports_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="Missing User", description=f"{ctx.message.author.mention} Specify the user!", color=0xff00f6)
+            embed=discord.Embed(title="Missing User", description="Specify the user!", color=0xff0000)
             await ctx.send(embed=embed)
         elif isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
+            embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
             await ctx.send(embed=embed)
 
 async def setup(bot):

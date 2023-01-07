@@ -63,7 +63,7 @@ class Levels(commands.Cog):
     async def level(self, ctx, member: discord.Member=None):
         
         if member is None:
-            embed=discord.Embed(title="Argument Missing", description=f"{ctx.message.author.mention} Please mention username.", color=0xff00f6)
+            embed=discord.Embed(title="Argument Missing", description="Please mention username.", color=0xff0000)
             return await ctx.reply(embed=embed)
 
         member_id = str(member.id)
@@ -115,8 +115,8 @@ class Levels(commands.Cog):
     @cleardb.error
     async def cleardb_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
 
     @commands.command(pass_context = "True")
     @commands.has_permissions(ban_members=True)
@@ -126,7 +126,7 @@ class Levels(commands.Cog):
                 colour=0xFFA500,
                 timestamp=ctx.message.created_at)
         if not member:
-            await ctx.send(f"{ctx.message.author.mention} Please specify user")
+            await ctx.reply(f"Please specify user")
             return
         else:
             member_id = str(member.id)
@@ -139,8 +139,10 @@ class Levels(commands.Cog):
     @rmlevel.error
     async def rmlevel_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} You have no permission to use this command.", color=0xff00f6)
+            embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
             await ctx.send(embed=embed)
-        
+        elif isinstance(error, commands.MissingRequiredArgument):
+            embed=discord.Embed(title="ERROR", description="Arguments Missing", color=0xff0000)
+            await ctx.reply(embed=embed)
 async def setup(bot):
     await bot.add_cog(Levels(bot))

@@ -13,7 +13,7 @@ class Clear(commands.Cog):
             await ctx.send("Amount cannot be negative")
             print("ERROR: negative amount")
         elif amount > 100:
-            embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Cannot delete more than `100 messages`", color=0xff00f6)
+            embed=discord.Embed(title="ERROR", description="Cannot delete more than **100 messages**", color=0xff0000)
             await ctx.send(embed=embed)       
         else:
             await channel.purge(limit=amount+1)
@@ -21,14 +21,14 @@ class Clear(commands.Cog):
     @clear.error
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} No permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="No permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Please enter an amount", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="ERROR", description="Please enter an amount", color=0xff0000)
+            await ctx.reply(embed=embed)
         elif isinstance(error, commands.BadArgument):
-            embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Bad Syntax", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="ERROR", description="Bad Syntax", color=0xff0000)
+            await ctx.reply(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(Clear(bot))

@@ -30,12 +30,12 @@ class Prefix(commands.Cog):
     @cprefix.error
     async def prefix_error(self, ctx ,error):
         if isinstance(error, commands.MissingPermissions):
-            embed=discord.Embed(title="Permission Denied.", description=f"{ctx.message.author.mention} No permission to use this command.", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="Permission Denied.", description="No permission to use this command.", color=0xff0000)
+            await ctx.reply(embed=embed)
             print("Permission Dennied to change prefix")
         elif isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} Prefix argument is missing", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="ERROR", description="Prefix argument is missing", color=0xff0000)
+            await ctx.reply(embed=embed)
             print("Prefix missing")
         
 async def setup(bot):

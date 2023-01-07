@@ -17,8 +17,8 @@ class Poll(commands.Cog):
     @poll.error
     async def poll_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            embed=discord.Embed(title="User ERROR", description=f"{ctx.message.author.mention} **Arguments Missing**", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title="ERROR", description="Arguments Missing", color=0xff0000)
+            await ctx.reply(embed=embed)
 
 async def setup(client):
     await client.add_cog(Poll(client))

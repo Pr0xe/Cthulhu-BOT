@@ -4,6 +4,7 @@ import random
 import discord
 from discord.ext import commands
 from discord import Embed, Member
+import constants
 
 class Reddit(commands.Cog):
     def __init__(self,bot):
@@ -14,6 +15,7 @@ class Reddit(commands.Cog):
                         check_for_async=False)
     
     @commands.command(pass_context = True, aliases=['horny'])
+    @commands.has_role(constants.NSFW_ROLE_ID)
     async def nsfw(self, ctx, subred="nsfw"):
         if ctx.channel.is_nsfw():
             subbs = []
@@ -29,9 +31,14 @@ class Reddit(commands.Cog):
             await ctx.send(f"{name}\n{url}")
 
         else:
-            embed=discord.Embed(title=":x: Channel Error", description=f"{ctx.message.author.mention} You need to be in NSFW channel to use this command", color=0xff00f6)
-            await ctx.send(embed=embed)
-    
+            embed=discord.Embed(title=":x: Channel Error", description="You need to be in NSFW channel to use this command", color=0xff0000)
+            await ctx.reply(embed=embed)
+    @nsfw.error
+    async def addrole_error(self, ctx ,error):
+        if isinstance(error, commands.MissingRole):
+            embed=discord.Embed(title="Permission Denied.", description="No required role to use this command", color=0xff0000)
+            await ctx.reply(embed=embed)
+
     @commands.command(pass_context = True, aliases=['meme'])
     async def memes(self, ctx):
         if not ctx.channel.is_nsfw():
@@ -47,8 +54,8 @@ class Reddit(commands.Cog):
             
             await ctx.send(f"{name}\n{url}")
         else:
-            embed=discord.Embed(title=":x: Channel Error", description=f"{ctx.message.author.mention} You are in NSFW channel. Try command away from here!", color=0xff00f6)
-            await ctx.send(embed=embed)
+            embed=discord.Embed(title=":x: Channel Error", description="You are in NSFW channel. Try command away from here!", color=0xff0000)
+            await ctx.reply(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(Reddit(bot))

@@ -25,7 +25,8 @@ class BotInfo(commands.Cog):
         fields = [  ("Bot Developer", pr0xe_id, False),
                     ("Programming Language", f"{python_p[0]}  {python_p[1]}",True ),
                     ("Discord Version", discord.__version__,False),
-                    ("Latency", f"{self.bot.latency * 1000:,.0f}ms", True)]
+                    ("Latency", f"{self.bot.latency * 1000:,.0f}ms", True),
+                    ("Github Repository", "[github.com/Pr0xe/Cthulhu-BOT](https://github.com/Pr0xe/Cthulhu-BOT)", False)]
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
