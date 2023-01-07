@@ -16,7 +16,7 @@ class Help(commands.Cog):
             title = "Commands",
             description = f"Use `{pre}`help <command> for extended information on a command"
         )
-        embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `level`, `board`, `report`, `memes`, `nsfw(+18)`", inline= False)
+        embed_commands.add_field(name="Community", value="`who`, `server`, `bot`, `level`, `board`, `report`, `memes`, `nsfw(+18)`, `rolelist`", inline= False)
         embed_commands.add_field(name="Music", value="`join`, `play`, `playlist`, `pause`, `stop`, `skip`, `queue`, `playing`, `leave`, `seek`", inline= False)
         embed_commands.add_field(name="Moderation - :no_entry: Only for Admins and Owner :no_entry:", value="`cprefix`, `clear`, `ban`, `unban`, `kick`, `mute`, `unmute`", inline= False) 
         embed_commands.add_field(name="Role Management - :no_entry: Only for Admins and Owner :no_entry:", value="`role`, `rmrole`, `crole`, `drole`", inline= False)
@@ -58,6 +58,12 @@ class Help(commands.Cog):
     async def cprefix(self, ctx):
         embed_commands = discord.Embed(title="Prefix", description= "Change the prefix :no_entry: Admins ONLY :no_entry:", color= ctx.author.color)
         embed_commands.add_field(name="**Syntax**", value=f">cprefix <prefix>")
+        await ctx.send(embed=embed_commands)
+
+    @help.command()
+    async def rolelist(self, ctx):
+        embed_commands = discord.Embed(title="Role List", description= "List all roles that exists in this server", color= ctx.author.color)
+        embed_commands.add_field(name="**Syntax**", value=f">rolelist")
         await ctx.send(embed=embed_commands)
 
     @help.command()
@@ -142,6 +148,7 @@ class Help(commands.Cog):
     @help.command()
     async def nsfw(self, ctx):
         embed_commands = discord.Embed(title="NSFW", description= "NSFW content from reddit, **default sub is nsfw**", color= ctx.author.color)
+        embed_commands.add_field(name="**Note**", value=f"**Usage of this command requires specific role**", inline=False)
         embed_commands.add_field(name="**Syntax**", value=f">nsfw / >nsfw <subreddit>")
         await ctx.send(embed=embed_commands)
 
