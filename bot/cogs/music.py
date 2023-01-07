@@ -40,10 +40,12 @@ class Music(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_voice_state_update(self, member, before, after):
-		if not member.bot and after.channel is None:
-			voice  = discord.utils.get(self.bot.voice_clients)
-			if not [m for m in before.channel.members if not m.bot]:
-				await voice.disconnect()
+		voice_state = member.guild.voice_client
+		if voice_state is None:
+			return
+		if len(voice_state.channel.members) == 1:
+			await voice_state.disconnect()
+			self.queue.clear()
 
 	@commands.Cog.listener()
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
@@ -105,87 +107,93 @@ class Music(commands.Cog):
 	async def play_command(self, ctx, *, search: t.Optional[str]):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
+		voice_state = ctx.author.voice
 
-		if player is None:
+		if voice_state is None:
+			return await ctx.reply("You need to be in a voice channel to use this command")
+
+		elif ((player is None) and not(search is None)):
 			channel = ctx.author.voice.channel
 			await ctx.author.voice.channel.connect(cls=wavelink.Player)
 			await ctx.send(f"Connected to `{channel.name}`")
-
-		if search is None:
+		elif ((search is None) and not(player is None)):
 			if player.is_paused():
 				await player.resume()
 				mbed = discord.Embed(title="Playback resumed :arrow_forward:", color=discord.Color.from_rgb(0,255,0))
 				return await ctx.send(embed=mbed)
 			else:
 				return await ctx.reply("Please provide a song to search")
+		try:
+			tracks = await wavelink.YouTubeTrack.search(query=search)
+		except:
+			return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255,0,0)))
+
+		if tracks is None:
+			return await ctx.reply("No tracks found")
+
+		mbed = discord.Embed(
+			title="Select the track: ",
+			description=("\n".join(f"**{i+1}. {t.title}**" for i, t in enumerate(tracks[:5]))),
+			color = discord.Color.from_rgb(255, 255, 255)
+		)
+		msg = await ctx.reply(embed=mbed)
+
+		emojis_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '❌']
+		emojis_dict = {
+			'1️⃣': 0,
+			"2️⃣": 1,
+			"3️⃣": 2,
+			"4️⃣": 3,
+			"5️⃣": 4,
+			"❌": -1
+		}
+
+		for emoji in list(emojis_list[:min(len(tracks), len(emojis_list))]):
+			await msg.add_reaction(emoji)
+
+		def check(res, user):
+			return(res.emoji in emojis_list and user == ctx.author and res.message.id == msg.id)
+
+		try:
+			reaction, _ = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+		except asyncio.TimeoutError:
+			await msg.delete()
+			return
 		else:
-			try:
-				tracks = await wavelink.YouTubeTrack.search(query=search)
-			except:
-				return await ctx.reply(embed=discord.Embed(title="Something went wrong while searching for this track", color=discord.Color.from_rgb(255,0,0)))
+			await msg.delete()
 
-			if tracks is None:
-				return await ctx.reply("No tracks found")
-
-			mbed = discord.Embed(
-				title="Select the track: ",
-				description=("\n".join(f"**{i+1}. {t.title}**" for i, t in enumerate(tracks[:5]))),
-				color = discord.Color.from_rgb(255, 255, 255)
-			)
-			msg = await ctx.reply(embed=mbed)
-
-			emojis_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '❌']
-			emojis_dict = {
-				'1️⃣': 0,
-				"2️⃣": 1,
-				"3️⃣": 2,
-				"4️⃣": 3,
-				"5️⃣": 4,
-				"❌": -1
-			}
-
-			for emoji in list(emojis_list[:min(len(tracks), len(emojis_list))]):
-				await msg.add_reaction(emoji)
-
-			def check(res, user):
-				return(res.emoji in emojis_list and user == ctx.author and res.message.id == msg.id)
-
-			try:
-				reaction, _ = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
-			except asyncio.TimeoutError:
-				await msg.delete()
-				return
-			else:
-				await msg.delete()
-
-			try:
-				if emojis_dict[reaction.emoji] == -1: return
-				choosed_track = tracks[emojis_dict[reaction.emoji]]
-			except:
-				return
-		
-			if not ctx.voice_client:
-				vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
-			else:
-				vc: wavelink.Player = ctx.voice_client
-
-			if not vc.is_playing():
-				try:
-					await vc.play(choosed_track)
-				except:
-					return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
-			else:
-				self.queue.append(choosed_track)
-			mbed = discord.Embed(
-					title=f"Added {choosed_track} To the queue",
-					color=discord.Color.from_rgb(255, 255, 255)
-				)
-			await ctx.send(embed=mbed)
+		try:
+			if emojis_dict[reaction.emoji] == -1: return
+			choosed_track = tracks[emojis_dict[reaction.emoji]]
+		except:
+			return
 	
+		if not ctx.voice_client:
+			vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+		else:
+			vc: wavelink.Player = ctx.voice_client
+
+		if not vc.is_playing():
+			try:
+				await vc.play(choosed_track)
+			except:
+				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
+		else:
+			self.queue.append(choosed_track)
+		mbed = discord.Embed(
+				title=f"Added {choosed_track} To the queue",
+				color=discord.Color.from_rgb(255, 255, 255)
+			)
+		await ctx.send(embed=mbed)
+
 	@commands.command(name="playlist")
 	async def playlist_command(self, ctx, *, search: wavelink.YouTubePlaylist):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
+		voice_state = ctx.author.voice
+
+		if voice_state is None:
+			return await ctx.reply("You need to be in a voice channel to use this command")
 
 		if player is None:
 			channel = ctx.author.voice.channel
@@ -218,6 +226,14 @@ class Music(commands.Cog):
 					color=discord.Color.from_rgb(255, 255, 255)
 				)
 			await ctx.send(embed=mbed)
+	@playlist_command.error
+	async def clear_error(self, ctx, error):
+		if isinstance(error, commands.MissingRequiredArgument):
+			embed=discord.Embed(title="ERROR", description=f"Please provide a playlist link", color=0xff0000)
+			await ctx.reply(embed=embed)
+		elif isinstance(error, commands.BadArgument):
+			embed=discord.Embed(title="ERROR", description=f"Please provide a playlist link", color=0xff0000)
+			await ctx.reply(embed=embed)
 
 	@commands.command(name="stop")
 	async def stop_command(self, ctx):
