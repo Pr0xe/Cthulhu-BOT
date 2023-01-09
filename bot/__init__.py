@@ -10,6 +10,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot as BotBase
 from termcolor import colored
 import constants
+from discord import app_commands
 
 COGS = [path.split("\\")[-1][:-3] for path in glob("./bot/cogs/*.py")]
 
@@ -35,7 +36,6 @@ class Bot(BotBase):
     def __init__(self):
         self.ready = False
         self.guild = None
-        self.synced = False
         self._cogs = [p.stem for p in Path(".").glob("./bot/cogs/*.py")]
         super().__init__(command_prefix=get_prefix,
                       help_command=None,
@@ -45,10 +45,7 @@ class Bot(BotBase):
     async def setup_hook(self):
         for cog in self._cogs:
             await self.load_extension(f"bot.cogs.{cog}")
-            print((colored(f"{cog} LOADED!", 'green')))
-        if not self.synced:
-            await bot.tree.sync(guild=discord.Object(id=constants.SERVER_ID))
-            self.synced = True
+            print((colored(f"{cog} LOADED!", 'green')))   
         print("setup completed")
     
     def run(self, version):
@@ -88,3 +85,16 @@ class Bot(BotBase):
         await channel.send(embed=bye_embed)
 
 bot = Bot()
+
+@bot.command(name='sync')
+async def reload(ctx):
+    await ctx.send("Sync starting...")
+    sy = await bot.tree.sync(guild=discord.Object(id=constants.SERVER_ID))
+    await ctx.send(f"Sync completed: {len(sy)} commands synced ")
+
+@bot.hybrid_command(name="test", with_app_command=True, description = "Testing")
+@app_commands.guilds(discord.Object(id=constants.SERVER_ID))
+@commands.has_permissions(administrator=True)
+async def test(ctx: commands.Context):
+    await ctx.defer(ephemeral=True)
+    await ctx.reply("Hi!")
