@@ -138,7 +138,7 @@ class Music(commands.Cog):
 
 		mbed = discord.Embed(
 			title="Select the track: ",
-			description=("\n".join(f"**{i+1}. {t.title}**" for i, t in enumerate(tracks[:5]))),
+			description=("\n".join(f"**{i+1}.** {t.title}" for i, t in enumerate(tracks[:5]))),
 			color = discord.Color.from_rgb(255, 255, 255)
 		)
 		msg = await ctx.reply(embed=mbed)
@@ -186,7 +186,7 @@ class Music(commands.Cog):
 		else:
 			self.queue.append(choosed_track)
 		mbed = discord.Embed(
-				title=f"Added {choosed_track} To the queue",
+				title=f"Added **`{choosed_track}`** To the queue",
 				color=discord.Color.from_rgb(255, 255, 255)
 			)
 		await ctx.send(embed=mbed)
