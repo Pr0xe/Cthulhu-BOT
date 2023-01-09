@@ -5,6 +5,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 from discord import Embed, Member
 import constants
+from discord import app_commands
 
 pr0xe_id = '<@188771015751368704>'
 
@@ -12,7 +13,8 @@ class BotInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(pass_context=True, name="BOT Info",aliases=['bot'])
+    @commands.hybrid_command(name="bot", with_app_command=True ,description="Print information about the bot")
+    @app_commands.guilds(constants.SERVER_ID)
     async def bot(self, ctx):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
@@ -34,4 +36,4 @@ class BotInfo(commands.Cog):
         await log_channel.send(f"BOT Infos printed : requested by {ctx.author}")
     
 async def setup(bot):
-    await bot.add_cog(BotInfo(bot))
+    await bot.add_cog(BotInfo(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

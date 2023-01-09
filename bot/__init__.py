@@ -94,7 +94,5 @@ async def reload(ctx):
 
 @bot.hybrid_command(name="test", with_app_command=True, description = "Testing")
 @app_commands.guilds(discord.Object(id=constants.SERVER_ID))
-@commands.has_permissions(administrator=True)
 async def test(ctx: commands.Context):
-    await ctx.defer(ephemeral=True)
-    await ctx.reply("Hi!")
+    await ctx.reply(f"Hi {ctx.author.mention}")

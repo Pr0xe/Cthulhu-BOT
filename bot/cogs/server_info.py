@@ -2,12 +2,14 @@ import discord
 from discord.ext import commands
 from discord import Embed, Member
 import constants
+from discord import app_commands
 
 class ServerInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, name="Server Info", aliases=['server'])
+    @commands.hybrid_command(name="server", with_app_command=True ,description="Print information about the server")
+    @app_commands.guilds(constants.SERVER_ID)
     async def server(self, ctx):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
@@ -33,8 +35,9 @@ class ServerInfo(commands.Cog):
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
+        embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
         await log_channel.send(f"Server informations printed : requested by {ctx.author}")
 
 async def setup(bot):
-    await bot.add_cog(ServerInfo(bot))
+    await bot.add_cog(ServerInfo(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

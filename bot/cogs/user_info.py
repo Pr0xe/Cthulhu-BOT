@@ -2,11 +2,15 @@ import discord
 from discord.ext import commands
 from discord import Embed, Member
 import constants 
+from discord import app_commands
 
 class User_info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    @commands.command(pass_context=True, aliases=['whoami','who'])
+
+    @commands.hybrid_command(name="who", with_app_command=True ,description="Print information about the member you want")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(member="Mention the member you want to know about")
     async def user_info(self, ctx, member: discord.Member = None):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         if not member:
