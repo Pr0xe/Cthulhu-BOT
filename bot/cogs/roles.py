@@ -81,8 +81,8 @@ class Roles(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def addrole(self, ctx, role: discord.Role, user: discord.Member):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
-        if user.top_role >= ctx.author.top_role:
-            embed=discord.Embed(title="ERROR", description="This user is a higher or the same role as you.", color=0xff0000)
+        if role >= user.top_role:
+            embed=discord.Embed(title="ERROR", description="This role is higher or the same yours.", color=0xff0000)
             await ctx.send(embed=embed)
         else:
             if role in user.roles:
@@ -120,13 +120,17 @@ class Roles(commands.Cog):
     @app_commands.describe(role="Mention role you want", user="Mention the user you want")
     @commands.has_permissions(manage_roles=True)
     async def rmrole(self, ctx, role: discord.Role, user: discord.Member):
-        if role not in user.roles:
-            embed=discord.Embed(title="Remove Role Error", description=f"{user.mention} does not have this role: {role.mention}", color=0xff0000)
+        if role >= user.top_role:
+            embed=discord.Embed(title="ERROR", description="This role is higher or the same yours.", color=0xff0000)
             await ctx.send(embed=embed)
         else:
-            await user.remove_roles(role)
-            embed=discord.Embed(title="Remove role", description=f"{ctx.message.author.mention} Successfully removed {role.mention} role from {user.mention}", color=0x00ff00)
-            await ctx.send(embed=embed)
+            if role not in user.roles:
+                embed=discord.Embed(title="Remove Role Error", description=f"{user.mention} does not have this role: {role.mention}", color=0xff0000)
+                await ctx.send(embed=embed)
+            else:
+                await user.remove_roles(role)
+                embed=discord.Embed(title="Remove role", description=f"{ctx.message.author.mention} Successfully removed {role.mention} role from {user.mention}", color=0x00ff00)
+                await ctx.send(embed=embed)
     
     #ERROR HANDLING 
     @rmrole.error

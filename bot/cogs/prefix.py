@@ -13,7 +13,7 @@ class Prefix(commands.Cog):
         self.bot = bot
 
     @commands.command(pass_context = True, description="Change prefix of current server")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(administrator=True)
     async def cprefix(self,ctx,prefix):
         embed = discord.Embed(
         title="Server Status",
