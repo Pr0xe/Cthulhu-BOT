@@ -11,6 +11,7 @@ from discord.ext.commands.errors import MissingRequiredArgument
 from termcolor import colored
 import re
 import constants
+from discord import app_commands
 
 nest_asyncio.apply()
 
@@ -33,8 +34,10 @@ class Report(commands.Cog):
         except:
             print(colored("Unable to connect", 'red'))
 
-    @commands.command(pass_context = True, aliases=['rep'])
-    async def report(self, ctx, member: discord.Member, *reason:str):
+    @commands.hybrid_command(name="report", with_app_command=True ,description="Report user")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(member="Mention the member you want", reason="Provide the reason")
+    async def report(self, ctx, member: discord.Member, *, reason:str):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         warn_embed = discord.Embed(
         title=":warning: Report Submitted :warning:",
@@ -45,7 +48,7 @@ class Report(commands.Cog):
         if not reason:
             await ctx.reply("Please provide a reason!")
             return
-        reason = ' '.join(reason)
+        reason = ''.join(reason[:])
         member_id = str(member.id)
 
         user = await self.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
@@ -73,8 +76,10 @@ class Report(commands.Cog):
             embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
             await ctx.reply(embed=embed)
     
-    @commands.command(pass_context = True, aliases=['drep'])
-    @commands.has_permissions(kick_members=True)
+    @commands.hybrid_command(name="dreport", with_app_command=True ,description="Delete reports from user")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(member="Mention the member you want")
+    @commands.has_permissions(ban_members=True)
     async def dreport(self, ctx, member:discord.Member):
         drep_embed = discord.Embed(
                 title=":white_circle: Report Status :white_heart:",
@@ -103,7 +108,9 @@ class Report(commands.Cog):
             embed=discord.Embed(title="Missing User", description="Specify the user!", color=0xff0000)
             await ctx.reply(embed=embed)
 
-    @commands.command(pass_context = True)
+    @commands.hybrid_command(name="reports", with_app_command=True ,description="Print report database or user report records")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(member="Mention the member you want")
     @commands.has_permissions(ban_members=True)
     async def reports(self, ctx, member: discord.Member = None):
         drep_embed = discord.Embed(
@@ -150,4 +157,4 @@ class Report(commands.Cog):
             await ctx.send(embed=embed)
 
 async def setup(bot):
-    await bot.add_cog(Report(bot))
+    await bot.add_cog(Report(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

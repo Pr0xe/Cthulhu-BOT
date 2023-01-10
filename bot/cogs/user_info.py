@@ -23,7 +23,7 @@ class User_info(commands.Cog):
             colour=0xFFA500,
             timestamp=ctx.message.created_at)
         em_user.set_thumbnail(url=member.display_avatar)
-        em_user.set_footer(text=f"Requested by {name}")
+        em_user.set_footer(text=f"Requested by {ctx.author}")
         fields = [
             ("Username", name),
             ("Created Account On:", member.created_at.strftime("%#d %B %Y")),
@@ -38,4 +38,4 @@ class User_info(commands.Cog):
         await log_channel.send(f"Informations about {member} printed: requested by {ctx.author}")
 
 async def setup(bot):
-    await bot.add_cog(User_info(bot))
+    await bot.add_cog(User_info(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

@@ -5,6 +5,7 @@ from discord import Embed, Member
 from discord.utils import get
 from discord.ext.commands import has_permissions
 import constants 
+from discord import app_commands
 
 class Roles(commands.Cog):
     def __init__(self, bot):
@@ -25,8 +26,10 @@ class Roles(commands.Cog):
                     discord.Color.orange(),
                     discord.Color.dark_orange()]
 
-    @commands.command(pass_context = True, aliases=['crole'])
-    @has_permissions(manage_roles=True)
+    @commands.hybrid_command(name="crole", with_app_command=True ,description="Create a custom role in server")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(_role="Add role name")
+    @commands.has_permissions(manage_roles=True)
     async def create_role(self, ctx,* ,_role ):
         guild = ctx.guild
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
@@ -48,8 +51,10 @@ class Roles(commands.Cog):
             embed=discord.Embed(title="ERROR", description="Arguments are missing", color=0xff0000)
             await ctx.reply(embed=embed)
         
-    @commands.command(pass_context = True)
-    @has_permissions(manage_roles=True)
+    @commands.hybrid_command(name="drole", with_app_command=True ,description="Delete a role from server")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(role="Add role name to delete")
+    @commands.has_permissions(administrator=True)
     async def drole(self, ctx, *, role: discord.Role):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         if role is None:
@@ -70,18 +75,24 @@ class Roles(commands.Cog):
             embed=discord.Embed(title="ERROR", description="Arguments are missing", color=0xff0000)
             await ctx.reply(embed=embed) 
 
-    @commands.command(pass_context = True, aliases=['role'])
-    @has_permissions(manage_roles=True)
+    @commands.hybrid_command(name="role", with_app_command=True ,description="Add a role to the user")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(role="Mention role you want", user="Mention the user you want")
+    @commands.has_permissions(manage_roles=True)
     async def addrole(self, ctx, role: discord.Role, user: discord.Member):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
-        if role in user.roles:
-            embed=discord.Embed(title="Add Role Error", description=f"{user.mention} already have this role {role.mention}", color=0xff0000)
+        if user.top_role >= ctx.author.top_role:
+            embed=discord.Embed(title="ERROR", description="This user is a higher or the same role as you.", color=0xff0000)
             await ctx.send(embed=embed)
         else:
-            await user.add_roles(role)
-            embed=discord.Embed(title="Add Role", description=f"{ctx.message.author.mention} Successfully given {role.mention} role to {user.mention}", color=0x00ff00)
-            await ctx.send(embed=embed)
-            await log_channel.send(f"{ctx.message.author} changed role to {user}")
+            if role in user.roles:
+                embed=discord.Embed(title="Add Role Error", description=f"{user.mention} already have this role {role.mention}", color=0xff0000)
+                await ctx.send(embed=embed)
+            else:
+                await user.add_roles(role)
+                embed=discord.Embed(title="Add Role", description=f"{ctx.message.author.mention} Successfully given {role.mention} role to {user.mention}", color=0x00ff00)
+                await ctx.send(embed=embed)
+                await log_channel.send(f"{ctx.message.author} changed role to {user}")
     
     #ERROR HANDLING 
     @addrole.error
@@ -104,8 +115,10 @@ class Roles(commands.Cog):
             await ctx.reply(embed=embed)
             
         
-    @commands.command(pass_context = True)
-    @has_permissions(manage_roles=True)
+    @commands.hybrid_command(name="rmrole", with_app_command=True ,description="Remove a role from the user")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(role="Mention role you want", user="Mention the user you want")
+    @commands.has_permissions(manage_roles=True)
     async def rmrole(self, ctx, role: discord.Role, user: discord.Member):
         if role not in user.roles:
             embed=discord.Embed(title="Remove Role Error", description=f"{user.mention} does not have this role: {role.mention}", color=0xff0000)
@@ -135,10 +148,11 @@ class Roles(commands.Cog):
             embed=discord.Embed(title="ERROR", description="You are lacking a required role", color=0xff0000)
             await ctx.reply(embed=embed)
     
-    @commands.command(name="rolelist")
+    @commands.hybrid_command(name="rolelist", with_app_command=True ,description="List of all roles in the server")
+    @app_commands.guilds(constants.SERVER_ID)
     async def role_list(self, ctx):
         roles = [role for role in ctx.guild.roles[1:]]
         await ctx.send("\n".join(reversed([role.mention for role in roles])))
 
 async def setup(bot):
-    await bot.add_cog(Roles(bot))
+    await bot.add_cog(Roles(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

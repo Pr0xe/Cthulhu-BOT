@@ -5,6 +5,7 @@ import wavelink
 import asyncio
 from discord.ext import commands
 import constants
+from discord import app_commands
 
 TIME_REGEX = r"([0-9]{1,2})[:ms](([0-9]{1,2})s?)?"
 
@@ -76,7 +77,9 @@ class Music(commands.Cog):
 		else:
 			print(reason)
 
-	@commands.command(name="connect", aliases=["join"])
+	@commands.hybrid_command(name="join", with_app_command=True ,description="Add bot to your voice channel")
+	@app_commands.guilds(constants.SERVER_ID)
+	@app_commands.describe(channel="Voice channel name not needed")
 	async def connect_command(self, ctx, *, channel: t.Optional[discord.VoiceChannel]):
 		voice_state = ctx.author.voice
 
@@ -96,7 +99,8 @@ class Music(commands.Cog):
 		await channel.connect(cls=wavelink.Player)
 		await ctx.send(f"Connected to {channel.name}.")
 		
-	@commands.command(name="leave", aliases=["disconnect"])
+	@commands.hybrid_command(name="leave", with_app_command=True ,description="Bot leave your voice channel")
+	@app_commands.guilds(constants.SERVER_ID)
 	async def leave_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -108,7 +112,9 @@ class Music(commands.Cog):
 		self.queue.clear()
 		await ctx.send(f"Disconnected :wave:")
 
-	@commands.command(name="play", aliases=['p'])
+	@commands.hybrid_command(name="play", with_app_command=True ,description="Play your desired song")
+	@app_commands.guilds(constants.SERVER_ID)
+	@app_commands.describe(search="Add your favorite song title or link")
 	async def play_command(self, ctx, *, search: t.Optional[str]):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -191,7 +197,9 @@ class Music(commands.Cog):
 			)
 		await ctx.send(embed=mbed)
 
-	@commands.command(name="playlist")
+	@commands.hybrid_command(name="playlist", with_app_command=True ,description="Play your favorite playlist")
+	@app_commands.guilds(constants.SERVER_ID)
+	@app_commands.describe(search="Add your favorite playlist link")
 	async def playlist_command(self, ctx, *, search: wavelink.YouTubePlaylist):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -240,7 +248,8 @@ class Music(commands.Cog):
 			embed=discord.Embed(title="ERROR", description=f"Please provide a playlist link", color=0xff0000)
 			await ctx.reply(embed=embed)
 
-	@commands.command(name="stop")
+	@commands.hybrid_command(name="stop", with_app_command=True ,description="Stop the music")
+	@app_commands.guilds(constants.SERVER_ID)
 	async def stop_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -257,7 +266,8 @@ class Music(commands.Cog):
 		else:
 			return await ctx.send("Nothing Is playing right now")
 
-	@commands.command(name="pause")
+	@commands.hybrid_command(name="pause", with_app_command=True ,description="Pause the music")
+	@app_commands.guilds(constants.SERVER_ID)
 	async def pause_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild) 
@@ -274,8 +284,9 @@ class Music(commands.Cog):
 				await ctx.send("Nothing is playing right now")
 		else:
 			return await ctx.send("Playback is Already paused")
-
-	@commands.command(name="resume")
+	
+	@commands.hybrid_command(name="resume", with_app_command=True ,description="Resume paused music")
+	@app_commands.guilds(constants.SERVER_ID)
 	async def resume_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -296,7 +307,8 @@ class Music(commands.Cog):
 			else:
 				return await ctx.send("Playback is not paused")
 	
-	@commands.command(name="playing")
+	@commands.hybrid_command(name="playing", with_app_command=True ,description="Printing info about current song")
+	@app_commands.guilds(constants.SERVER_ID)
 	async def now_playing_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -334,7 +346,8 @@ class Music(commands.Cog):
 		else:
 			await ctx.reply("Nothing is playing right now")
 	
-	@commands.command(name="skip", aliases=['next'])
+	@commands.hybrid_command(name="skip", with_app_command=True ,description="Skip current song")
+	@app_commands.guilds(constants.SERVER_ID)
 	async def skip_command(self, ctx):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
@@ -356,11 +369,13 @@ class Music(commands.Cog):
 		else:
 			await ctx.reply("The queue is empty")
 			
-	@commands.command(name="queue", aliases=["q"])
-	async def queue_command(self, ctx: commands.Context, *, search=None):
+	@commands.hybrid_command(name="queue", with_app_command=True ,description="Bot resume paused music", aliases=["q"] )
+	@app_commands.guilds(constants.SERVER_ID)
+	@app_commands.describe(clear="Type clear if you want to clear the queue")
+	async def queue_command(self, ctx: commands.Context, *, clear=None):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
-		if search == "clear":
+		if clear == "clear":
 			if len(self.queue)==0:
 				return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
 			else:
@@ -380,7 +395,9 @@ class Music(commands.Cog):
 			return await ctx.reply(embed=discord.Embed(title="The queue is empty", color=discord.Color.from_rgb(255, 255, 255)))
 	
 
-	@commands.command(name="seek")
+	@commands.hybrid_command(name="seek", with_app_command=True ,description="Seek the music track by second or minutes")
+	@app_commands.guilds(constants.SERVER_ID)
+	@app_commands.describe(position="Position ex. 20s or 1m2s, seconds or minutes")
 	async def seek(self, ctx: commands.Context, position: str):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
