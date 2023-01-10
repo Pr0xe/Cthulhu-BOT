@@ -12,7 +12,7 @@ class Prefix(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
 
-    @commands.command(pass_context = True)
+    @commands.command(pass_context = True, description="Change prefix of current server")
     @commands.has_permissions(manage_roles=True)
     async def cprefix(self,ctx,prefix):
         embed = discord.Embed(

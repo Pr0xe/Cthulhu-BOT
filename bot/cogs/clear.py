@@ -5,7 +5,7 @@ class Clear(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, description="Delete messages equals to give amount")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount:int):
         channel = ctx.channel

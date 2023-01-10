@@ -2,12 +2,15 @@ import discord
 from discord.ext import commands
 from discord import Embed, Member
 import constants
+from discord import app_commands
 
 class Mute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context = True)
+    @commands.hybrid_command(name="mute", with_app_command=True ,description="Mute a user")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(member="Add member", reason="Provide a reason for mute")
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, member: discord.Member, *, reason=None):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
@@ -26,8 +29,9 @@ class Mute(commands.Cog):
             embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
             await ctx.reply(embed=embed)
             
-    @commands.command(pass_context = True)
-    @commands.has_permissions(manage_roles=True)
+    @commands.hybrid_command(name="unmute", with_app_command=True ,description="Unmute a user")
+    @app_commands.guilds(constants.SERVER_ID)
+    @app_commands.describe(member="Add member")
     async def unmute(self, ctx, member: discord.Member):
         log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         await member.edit(mute=False)
@@ -44,4 +48,4 @@ class Mute(commands.Cog):
             embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
             await ctx.reply(embed=embed)
 async def setup(bot):
-    await bot.add_cog(Mute(bot))
+    await bot.add_cog(Mute(bot),guilds=[discord.Object(id=constants.SERVER_ID)])
