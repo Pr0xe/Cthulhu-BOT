@@ -8,6 +8,7 @@ from discord import embeds
 from discord.ext import commands
 from discord import Embed, Member
 import constants
+from discord import app_commands
 
 class Levels(commands.Cog):
     def __init__(self, bot):
@@ -59,7 +60,8 @@ class Levels(commands.Cog):
             embed=discord.Embed(title=f":tada: Level Up :tada:", description="**{0}** is level **{1}** :star:".format(ctx.author.mention, user['level'] + 1), color=0x00ffff)
             await channel.send(embed=embed)
         
-    @commands.command(pass_context = True)
+    @commands.hybrid_command(name="level", with_app_command=True ,description="Display the level of user")
+    @app_commands.guilds(constants.SERVER_ID)
     async def level(self, ctx, member: discord.Member=None):
         
         if member is None:
@@ -94,7 +96,8 @@ class Levels(commands.Cog):
             embed.add_field(name="XP to next Level", value=((round((4 * (user[0]['level'] ** 3)) / 5)) - (user[0]['xp'])), inline=False)
             await ctx.reply(embed=embed)
 
-    @commands.command(pass_context = "True")
+    @commands.hybrid_command(name="board", with_app_command=True ,description="Display the leaderboard of the server")
+    @app_commands.guilds(constants.SERVER_ID)
     async def board(self, ctx):
         _data = await self.pg_con.fetch("SELECT * FROM levels ORDER BY level DESC")
         embed = discord.Embed(title=":crown: Level - XP Leaderboard :crown:", color=0x29aff2)
@@ -102,7 +105,8 @@ class Levels(commands.Cog):
             embed.add_field(name=f"{self.bot.get_user(int(_data[i][0]))}", value=f"level : {int(_data[i][2])}  XP : {int(_data[i][3])}")
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context = "True")
+    @commands.hybrid_command(name="cleardb", with_app_command=True ,description="Clear database from users that left the server")
+    @app_commands.guilds(constants.SERVER_ID)
     @commands.has_permissions(ban_members=True)
     async def cleardb(self, ctx):
         _data = await self.pg_con.fetch("SELECT * FROM levels")
@@ -118,7 +122,8 @@ class Levels(commands.Cog):
             embed=discord.Embed(title="Permission Denied.", description="You have no permission to use this command.", color=0xff0000)
             await ctx.reply(embed=embed)
 
-    @commands.command(pass_context = "True")
+    @commands.hybrid_command(name="rmlevel", with_app_command=True ,description="Remove level of the user")
+    @app_commands.guilds(constants.SERVER_ID)
     @commands.has_permissions(ban_members=True)
     async def rmlevel(self, ctx, member: discord.Member):
         log_channel = self.bot.get_channel(900492686581178398)
@@ -145,4 +150,4 @@ class Levels(commands.Cog):
             embed=discord.Embed(title="ERROR", description="Arguments Missing", color=0xff0000)
             await ctx.reply(embed=embed)
 async def setup(bot):
-    await bot.add_cog(Levels(bot))
+    await bot.add_cog(Levels(bot),guilds=[discord.Object(id=constants.SERVER_ID)])
