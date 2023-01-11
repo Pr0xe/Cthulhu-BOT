@@ -7,8 +7,6 @@ from discord import Embed, Member
 import constants
 from discord import app_commands
 
-pr0xe_id = '<@188771015751368704>'
-
 class BotInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -24,11 +22,12 @@ class BotInfo(commands.Cog):
         python_p = ["Python", platform.python_version()]
         embed.set_author(name="Cthulhu ", icon_url="https://cdn.discordapp.com/app-icons/766607810943123466/97bc49d97193d6de74c7a8f9b3a1c8ef.png?size=256")
         embed.set_footer(text=f"Requested by {ctx.author}")
-        fields = [  ("Bot Developer", pr0xe_id, False),
+        fields = [  ("Bot Developer", "[Pr0xe](https://pr0xe.github.io/)", False),
                     ("Programming Language", f"{python_p[0]}  {python_p[1]}",True ),
-                    ("Discord Version", discord.__version__,False),
+                    ("Discord.py Version", discord.__version__,False),
+                    ("Github Repository", "[github.com/Pr0xe/Cthulhu-BOT](https://github.com/Pr0xe/Cthulhu-BOT)", False),
                     ("Latency", f"{self.bot.latency * 1000:,.0f}ms", True),
-                    ("Github Repository", "[github.com/Pr0xe/Cthulhu-BOT](https://github.com/Pr0xe/Cthulhu-BOT)", False)]
+                   ]
 
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
