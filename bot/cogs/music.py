@@ -234,13 +234,14 @@ class Music(commands.Cog):
 				except:
 					return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
 			mbed = discord.Embed(
-					title=f"{search}",
+					title=f"Now playing : `{search}`",
 					description = f"Playlist with `{len(self.queue)} songs` added",
 					color=discord.Color.from_rgb(255, 255, 255)
 				)
 			await ctx.send(embed=mbed)
+
 	@playlist_command.error
-	async def clear_error(self, ctx, error):
+	async def playlist_command_error(self, ctx, error):
 		if isinstance(error, commands.MissingRequiredArgument):
 			embed=discord.Embed(title="ERROR", description=f"Please provide a playlist link", color=0xff0000)
 			await ctx.reply(embed=embed)
