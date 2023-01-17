@@ -53,7 +53,7 @@ class Utils(commands.Cog):
     async def help(self, ctx: commands.Context):
         embed = discord.Embed(
             title="Help command",
-            description="This is help command"
+            description="Select the category you want to get help"
         )
         view = View().add_item(HelpSelect(self.bot))
         await ctx.send(embed=embed, view=view)
