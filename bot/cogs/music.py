@@ -52,6 +52,12 @@ class Music(commands.Cog):
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
 		try:
 			self.queue.pop(0)
+			channel = self.bot.get_channel(constants.SONG_CHANNEL)
+			await channel.send(embed=discord.Embed(
+					title=f"Now Playing: {track.title}",
+					url=f"{player.track.info['uri']}",
+					color=discord.Color.from_rgb(0,255,0)))
+			
 		except:
 			pass
 	
@@ -59,7 +65,7 @@ class Music(commands.Cog):
 	async def on_wavelink_track_end(self, player: wavelink.Player, track: wavelink.Track, reason):
 		if str(reason) == "FINISHED":
 			if not len(self.queue) == 0:
-				next_track: wavelink.Track = self.queue[0]
+				next_track: track = self.queue[0]
 				channel = self.bot.get_channel(constants.SONG_CHANNEL)
 
 				try:
@@ -68,10 +74,6 @@ class Music(commands.Cog):
 					return await channel.send(
 						embed=discord.Embed(title=f"Something went wrong while playing **{next_track.title}**",
 						color=discord.Color.from_rgb(255,0,0)))
-				await channel.send(embed=discord.Embed(
-					title=f"Now Playing: {next_track.title}",
-					url=f"{player.track.info['uri']}",
-					color=discord.Color.from_rgb(0,255,0)))
 			else:
 				pass
 		else:
@@ -357,16 +359,15 @@ class Music(commands.Cog):
 			next_track: wavelink.Track = self.queue[0]
 			try:
 				await player.play(next_track)
+				await ctx.reply(embed=discord.Embed(
+					title="Song skipped :track_next:",
+					color=discord.Color.from_rgb(0,255,0)
+				))
 			except:
 				return await ctx.reply(embed=discord.Embed(
 					title="Something went wrong while playing this track",
 					color=discord.Color.from_rgb(255,0,0)
 				))
-			await ctx.reply(embed=discord.Embed(
-				title=f"Now Playing {next_track.title}",
-				url=f"{player.track.info['uri']}",
-				color=discord.Color.from_rgb(0,255,0)
-			))
 		else:
 			await ctx.reply("The queue is empty")
 			
