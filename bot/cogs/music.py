@@ -54,7 +54,8 @@ class Music(commands.Cog):
 					
 			channel = self.bot.get_channel(constants.SONG_CHANNEL)
 			embed=discord.Embed(
-					title=f"Now playing: {track.title}",
+					title=f"{track.title}",
+					description="Playing now",
 					url=f"{player.track.info['uri']}",
 					color=discord.Color.from_rgb(0,255,0))
 			await channel.send(embed=embed)
