@@ -51,13 +51,13 @@ class Music(commands.Cog):
 	@commands.Cog.listener()
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
 		try:
-			self.queue.pop(0)
+			if len(self.queue) > 0:
+				self.queue.pop(0)		
 			channel = self.bot.get_channel(constants.SONG_CHANNEL)
 			await channel.send(embed=discord.Embed(
-					title=f"Now Playing: {track.title}",
+					title=f"Now playing: {track.title}",
 					url=f"{player.track.info['uri']}",
 					color=discord.Color.from_rgb(0,255,0)))
-			
 		except:
 			pass
 	
@@ -117,7 +117,7 @@ class Music(commands.Cog):
 	@commands.hybrid_command(name="play", with_app_command=True ,description="Play your desired song")
 	@app_commands.guilds(constants.SERVER_ID)
 	@app_commands.describe(search="Add your favorite song title or link")
-	async def play_command(self, ctx, *, search: t.Optional[str]):
+	async def play_command(self, ctx, *, search: str):
 		node = wavelink.NodePool.get_node()
 		player = node.get_player(ctx.guild)
 		voice_state = ctx.author.voice
@@ -125,17 +125,10 @@ class Music(commands.Cog):
 		if voice_state is None:
 			return await ctx.reply("You need to be in a voice channel to use this command")
 
-		elif ((player is None) and not(search is None)):
+		elif (player is None):
 			channel = ctx.author.voice.channel
 			await ctx.author.voice.channel.connect(cls=wavelink.Player)
 			await ctx.send(f"Connected to `{channel.name}`")
-		elif ((search is None) and not(player is None)):
-			if player.is_paused():
-				await player.resume()
-				mbed = discord.Embed(title="Playback resumed :arrow_forward:", color=discord.Color.from_rgb(0,255,0))
-				return await ctx.send(embed=mbed)
-			else:
-				return await ctx.reply("Please provide a song to search")
 		try:
 			tracks = await wavelink.YouTubeTrack.search(query=search)
 		except:
@@ -193,11 +186,19 @@ class Music(commands.Cog):
 				return await ctx.reply(embed=discord.Embed(title="Something went wrong while playing this track", color=discord.Color.from_rgb(255,0,0)))
 		else:
 			self.queue.append(choosed_track)
-		mbed = discord.Embed(
-				title=f"Added **`{choosed_track}`** To the queue",
-				color=discord.Color.from_rgb(255, 255, 255)
-			)
-		await ctx.send(embed=mbed)
+		
+		if not len(self.queue) == 0:
+			await ctx.send(discord.Embed(
+					title=f"Added **`{choosed_track}`** To the queue",
+					color=discord.Color.from_rgb(255, 255, 255))
+					)
+	
+	
+	@play_command.error
+	async def play_command_error(self, ctx, error):
+		if isinstance(error, commands.MissingRequiredArgument):
+			embed=discord.Embed(title="ERROR", description=f"Please provide a song", color=0xff0000)
+			await ctx.reply(embed=embed)
 
 	@commands.hybrid_command(name="playlist", with_app_command=True ,description="Play your favorite playlist")
 	@app_commands.guilds(constants.SERVER_ID)
