@@ -51,13 +51,14 @@ class Music(commands.Cog):
 	@commands.Cog.listener()
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
 		try:
-			if len(self.queue) > 0:
-				self.queue.pop(0)		
+					
 			channel = self.bot.get_channel(constants.SONG_CHANNEL)
-			await channel.send(embed=discord.Embed(
+			embed=discord.Embed(
 					title=f"Now playing: {track.title}",
 					url=f"{player.track.info['uri']}",
-					color=discord.Color.from_rgb(0,255,0)))
+					color=discord.Color.from_rgb(0,255,0))
+			await channel.send(embed=embed)
+			self.queue.pop(0)
 		except:
 			pass
 	
@@ -188,10 +189,11 @@ class Music(commands.Cog):
 			self.queue.append(choosed_track)
 		
 		if not len(self.queue) == 0:
-			await ctx.send(discord.Embed(
-					title=f"Added **`{choosed_track}`** To the queue",
-					color=discord.Color.from_rgb(255, 255, 255))
-					)
+			mbed = discord.Embed(
+				title=f"**`{choosed_track}`** Added To the queue",
+				color=discord.Color.from_rgb(255, 255, 255)
+			)
+			await ctx.send(embed=mbed)
 	
 	
 	@play_command.error
