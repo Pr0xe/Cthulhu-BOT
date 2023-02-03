@@ -48,18 +48,25 @@ class Music(commands.Cog):
 		if len(voice_state.channel.members) == 1:
 			await voice_state.disconnect()
 			self.queue.clear()
+		if before.channel and not after.channel and member.id == constants.BOT_ID:
+			song_channel = self.bot.get_channel(constants.SONG_CHANNEL)
+			await song_channel.send(f"{member.mention}Disconnected :wave:")
+			self.queue.clear()
 
 	@commands.Cog.listener()
 	async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
 		try:
 					
-			channel = self.bot.get_channel(constants.SONG_CHANNEL)
+			channel = self.bot.get_channel(constants.TEST_CHANNEL)
 			embed=discord.Embed(
 					title=f"Playing now",
 					description=f"[{track.title}]({player.track.info['uri']})",
 					timestamp=datetime.datetime.now(),
 					color=discord.Color.from_rgb(0,255,0))
-			embed.add_field(name="Queue", value=f"`{len(self.queue)-1} songs`")
+			if (len(self.queue)-1) < 0:
+				pass
+			else:
+				embed.add_field(name="Queue", value=f"`{len(self.queue)-1} songs`")
 			await channel.send(embed=embed)
 			self.queue.pop(0)
 		except:
