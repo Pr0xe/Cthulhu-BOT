@@ -65,8 +65,7 @@ class Levels(commands.Cog):
     async def level(self, ctx, member: discord.Member=None):
         
         if member is None:
-            embed=discord.Embed(title="Argument Missing", description="Please mention username.", color=0xff0000)
-            return await ctx.reply(embed=embed)
+            member = ctx.author
 
         member_id = str(member.id)
         guild_id = str(ctx.guild.id)
