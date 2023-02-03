@@ -15,9 +15,7 @@ class Reddit(commands.Cog):
                         user_agent='cthulhu-bot',
                         check_for_async=False)
     
-    @commands.hybrid_command(name="nsfw", with_app_command=True ,description="Nsfw content at specific channel(18+)")
-    @app_commands.guilds(constants.SERVER_ID)
-    @app_commands.describe(subred="Add your desired subreddit")
+    @commands.command(name="nsfw" ,description="Nsfw content at specific channel(18+)")
     @commands.has_role(constants.NSFW_ROLE_ID)
     async def nsfw(self, ctx, subred="nsfw"):
         if ctx.channel.is_nsfw():
@@ -26,7 +24,8 @@ class Reddit(commands.Cog):
             hot_submissions = self.reddit.subreddit(subred).hot(limit=25)
             for submission in hot_submissions:
                 subbs.append(submission)
-
+            if subbs == 0:
+                return await ctx.reply("Subreddit not found")            
             random_pick = random.choice(subbs)
             name = random_pick.title 
             url = random_pick.url
@@ -36,13 +35,14 @@ class Reddit(commands.Cog):
         else:
             embed=discord.Embed(title=":x: Channel Error", description="You need to be in NSFW channel to use this command", color=0xff0000)
             await ctx.reply(embed=embed)
+    
     @nsfw.error
     async def addrole_error(self, ctx ,error):
         if isinstance(error, commands.MissingRole):
             embed=discord.Embed(title="Permission Denied.", description="No required role to use this command", color=0xff0000)
             await ctx.reply(embed=embed)
     
-    @commands.hybrid_command(name="memes", with_app_command=True ,description="Fetch random meme from subbreddit <memes>")
+    @commands.command(name="memes", description="Fetch random meme from subbreddit <memes>")
     @app_commands.guilds(constants.SERVER_ID)
     async def memes(self, ctx):
         if not ctx.channel.is_nsfw():
@@ -62,4 +62,4 @@ class Reddit(commands.Cog):
             await ctx.reply(embed=embed)
 
 async def setup(bot):
-    await bot.add_cog(Reddit(bot),guilds=[discord.Object(id=constants.SERVER_ID)])
+    await bot.add_cog(Reddit(bot))
