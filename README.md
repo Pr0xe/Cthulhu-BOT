@@ -24,7 +24,8 @@ WELCOME_CHANNEL = <channel_id>
 TEST_CHANNEL = <channel_id>
 SERVER_ID = <server_id>
 CUSTOM_ON_JOIN_ROLE_ID = <on join custom role id>
-NSFW_ROLE_ID = <nsfw role id>" >> constants.py
+NSFW_ROLE_ID = <nsfw role id>
+BOT_ID = <BOT id>" >> constants.py
 ```
 **Then you fill the .py file as the example**
 ## Read Carefully before you continue [here](https://github.com/Pr0xe/Cthulhu-BOT/tree/master/data)
