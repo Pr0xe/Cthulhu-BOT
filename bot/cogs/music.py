@@ -6,6 +6,7 @@ import asyncio
 from discord.ext import commands
 import constants
 from discord import app_commands
+import datetime
 
 TIME_REGEX = r"([0-9]{1,2})[:ms](([0-9]{1,2})s?)?"
 
@@ -54,10 +55,11 @@ class Music(commands.Cog):
 					
 			channel = self.bot.get_channel(constants.SONG_CHANNEL)
 			embed=discord.Embed(
-					title=f"{track.title}",
-					description="Playing now",
-					url=f"{player.track.info['uri']}",
+					title=f"Playing now",
+					description=f"[{track.title}]({player.track.info['uri']})",
+					timestamp=datetime.datetime.now(),
 					color=discord.Color.from_rgb(0,255,0))
+			embed.add_field(name="Queue", value=f"`{len(self.queue)-1} songs`")
 			await channel.send(embed=embed)
 			self.queue.pop(0)
 		except:
@@ -325,8 +327,8 @@ class Music(commands.Cog):
 
 		if player.is_playing():
 			mbed = discord.Embed(
-				title=f"Now Playing: {player.track}",
-				url=f"{player.track.info['uri']}",
+				title=f"Playing Now",
+				description=f"[{player.track}]({player.track.info['uri']})",
 				color=discord.Color.from_rgb(0,255,0)
 			)
 
@@ -342,13 +344,10 @@ class Music(commands.Cog):
 			pos_sec = int((pos_sec%3600)%60)
 			position = f"{pos_hour}hr {pos_min}min {pos_sec}sec" if not hour == 0 else f"{pos_min}min {pos_sec}sec"
 
-			mbed.add_field(name="Artist", value=player.track.info['author'], inline=False)
-			mbed.add_field(name="Length", value=f"{length}", inline=False)
-			mbed.add_field(
-				name="Position",
-				value=f"{position}/{length}",
-				inline=False
-			)
+			mbed.add_field(name="Artist", value=player.track.info['author'], inline=True)
+			mbed.add_field(name="Length", value=f"{length}", inline=True)
+			mbed.add_field(name="Position", value=f"{position}/{length}", inline=True)
+			mbed.add_field(name="Queue", value=f"`{len(self.queue)} songs`", inline=True)
 			return await ctx.reply(embed=mbed)
 		else:
 			await ctx.reply("Nothing is playing right now")
