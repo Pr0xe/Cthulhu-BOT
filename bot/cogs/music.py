@@ -382,7 +382,7 @@ class Music(commands.Cog):
 		else:
 			await ctx.reply("The queue is empty")
 			
-	@commands.hybrid_command(name="queue", with_app_command=True ,description="Bot resume paused music", aliases=["q"] )
+	@commands.hybrid_command(name="queue", with_app_command=True ,description="Print queued songs", aliases=["q"] )
 	@app_commands.guilds(constants.SERVER_ID)
 	@app_commands.describe(clear="Type clear if you want to clear the queue")
 	async def queue_command(self, ctx: commands.Context, *, clear=None):

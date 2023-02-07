@@ -24,8 +24,7 @@ class Reddit(commands.Cog):
             hot_submissions = self.reddit.subreddit(subred).hot(limit=25)
             for submission in hot_submissions:
                 subbs.append(submission)
-            if subbs == 0:
-                return await ctx.reply("Subreddit not found")            
+           
             random_pick = random.choice(subbs)
             name = random_pick.title 
             url = random_pick.url
