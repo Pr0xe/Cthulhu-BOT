@@ -50,7 +50,7 @@ class Music(commands.Cog):
 			self.queue.clear()
 		if before.channel and not after.channel and member.id == constants.BOT_ID:
 			song_channel = self.bot.get_channel(constants.SONG_CHANNEL)
-			await song_channel.send(f"{member.mention}Disconnected :wave:")
+			await song_channel.send("Disconnected :wave:")
 			await voice_state.disconnect()
 			self.queue.clear()
 
