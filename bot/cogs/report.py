@@ -114,21 +114,12 @@ class Report(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def reports(self, ctx, member: discord.Member = None):
         drep_embed = discord.Embed(
-                title=":white_circle: Report Status :white_circle:",
-                colour=0xFFFFFF)
+                title=":man_judge:  Report History :man_judge:",
+                colour=0xFF0000)
         if not member:
-            users_id = await self.pg_con.fetch("SELECT user_id FROM reports")
-            IDS = re.findall('[0-9]+', str(users_id))
-            if not IDS:
-                drep_embed.add_field(name="Reports not found", value="0", inline=False)
-                await ctx.send(embed=drep_embed)
-                return
-            for i in range(len(IDS)):
-                array_len = await self.pg_con.fetch("SELECT array_length(report,1) FROM reports WHERE user_id = $1", IDS[i])
-                temp_string = str(array_len)
-                total_reports = ''.join(filter (lambda i: i.isdigit(), temp_string))
-                user = self.bot.get_user(int(IDS[i]))
-                drep_embed.add_field(name=f"{user}", value=f"**{str(total_reports)}** reports in history", inline=False)    
+            data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
+            for i in range(len(data)):
+                drep_embed.add_field(name=f"{self.bot.get_user(int(data[i][0]))}", value=f"`reports : {len(data[i][1])}`", inline=False)
             await ctx.send(embed=drep_embed)
             return
         member_id = str(member.id)
@@ -139,11 +130,17 @@ class Report(commands.Cog):
             return
         else:
             rows = await self.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
+            data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
             clean_rows = "\n".join(re.findall(r"'([^']+)'", str(rows)))
+
+            for i in range(len(data)):
+                if (str(data[i][0]) == member_id):
+                    rep_count = len(data[i][1])
             rep_embed = discord.Embed(
-                title=f"User report history - {member}",
-                colour=0xFFFFFF)
-            rep_embed.add_field(name=f"Report messages", value=f"{str(clean_rows)}", inline=False)
+                title=f"User report history",
+                description=f"**{member}**",
+                colour=0xFF0000)
+            rep_embed.add_field(name=f"Report reasons - `{rep_count} Reports`", value=f"{str(clean_rows)}", inline=False)
             await ctx.send(embed=rep_embed)
             return
     

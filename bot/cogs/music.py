@@ -16,10 +16,8 @@ class Music(commands.Cog):
 		self.queue = []
 		self.position = 0
 		self.playingTextChannel = 0
-		bot.loop.create_task(self.create_nodes())
 	
-	async def create_nodes(self):
-		await self.bot.wait_until_ready()
+	async def setup(self):
 		await wavelink.NodePool.create_node(bot=self.bot,
                                             host='127.0.0.1',
                                             port=2333,
@@ -442,4 +440,6 @@ class Music(commands.Cog):
 			await ctx.repy(embed=embed)
 
 async def setup(bot):
-	await bot.add_cog(Music(bot)) 
+	music_bot = Music(bot)
+	await bot.add_cog(music_bot)
+	await music_bot.setup() 
