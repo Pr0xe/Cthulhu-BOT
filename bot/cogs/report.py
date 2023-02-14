@@ -111,38 +111,46 @@ class Report(commands.Cog):
     @commands.hybrid_command(name="reports", with_app_command=True ,description="Print report database or user report records")
     @app_commands.guilds(constants.SERVER_ID)
     @app_commands.describe(member="Mention the member you want")
-    @commands.has_permissions(ban_members=True)
     async def reports(self, ctx, member: discord.Member = None):
         drep_embed = discord.Embed(
                 title=":man_judge:  Report History :man_judge:",
                 colour=0xFF0000)
+       
         if not member:
-            data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
-            for i in range(len(data)):
-                drep_embed.add_field(name=f"{self.bot.get_user(int(data[i][0]))}", value=f"`reports : {len(data[i][1])}`", inline=False)
-            await ctx.send(embed=drep_embed)
-            return
+            if not ctx.message.author.guild_permissions.administrator:
+                embed=discord.Embed(title="Permission Denied.", description="You can see only your's report history", color=0xff0000)
+                return await ctx.send(embed=embed)
+            else:
+                data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
+                for i in range(len(data)):
+                    drep_embed.add_field(name=f"{self.bot.get_user(int(data[i][0]))}", value=f"`reports : {len(data[i][1])}`", inline=False)
+                await ctx.send(embed=drep_embed)
+                return
         member_id = str(member.id)
-        user = await self.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
-        if not user:
-            drep_embed.add_field(name="Reports not found", value=f"{member.name} has clear record", inline=False)
-            await ctx.send(embed=drep_embed)
-            return
-        else:
-            rows = await self.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
-            data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
-            clean_rows = "\n".join(re.findall(r"'([^']+)'", str(rows)))
+        if member_id == str(ctx.author.id):
+            user = await self.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
+            if not user:
+                drep_embed.add_field(name="Reports not found", value=f"{member.name} has clear record", inline=False)
+                await ctx.send(embed=drep_embed)
+                return
+            else:
+                rows = await self.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
+                data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
+                clean_rows = "\n".join(re.findall(r"'([^']+)'", str(rows)))
 
-            for i in range(len(data)):
-                if (str(data[i][0]) == member_id):
-                    rep_count = len(data[i][1])
-            rep_embed = discord.Embed(
-                title=f"User report history",
-                description=f"**{member}**",
-                colour=0xFF0000)
-            rep_embed.add_field(name=f"Report reasons - `{rep_count} Reports`", value=f"{str(clean_rows)}", inline=False)
-            await ctx.send(embed=rep_embed)
-            return
+                for i in range(len(data)):
+                    if (str(data[i][0]) == member_id):
+                        rep_count = len(data[i][1])
+                rep_embed = discord.Embed(
+                    title=f"{member}",
+                    description="User report history",
+                    colour=0xFF0000)
+                rep_embed.add_field(name=f"Report reasons - `{rep_count} Reports`", value=f"{str(clean_rows)}", inline=False)
+                await ctx.send(embed=rep_embed)
+                return
+        else:
+            embed=discord.Embed(title="Permission Denied.", description="You can't see reports of other users", color=0xff0000)
+            return await ctx.send(embed=embed)
     
     @reports.error
     async def reports_error(self, ctx, error):
