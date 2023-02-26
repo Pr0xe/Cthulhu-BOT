@@ -148,6 +148,27 @@ class Report(commands.Cog):
                 rep_embed.add_field(name=f"Report reasons - `{rep_count} Reports`", value=f"{str(clean_rows)}", inline=False)
                 await ctx.send(embed=rep_embed)
                 return
+        elif ctx.message.author.guild_permissions.administrator:
+            user = await self.pg_con.fetch("SELECT * FROM reports WHERE user_id = $1", member_id)
+            if not user:
+                drep_embed.add_field(name="Reports not found", value=f"{member.name} has clear record", inline=False)
+                await ctx.send(embed=drep_embed)
+                return
+            else:
+                rows = await self.pg_con.fetch("SELECT report FROM reports WHERE user_id = $1", member_id)
+                data = await self.pg_con.fetch("SELECT * from reports ORDER BY array_length(report,1) DESC")    
+                clean_rows = "\n".join(re.findall(r"'([^']+)'", str(rows)))
+
+                for i in range(len(data)):
+                    if (str(data[i][0]) == member_id):
+                        rep_count = len(data[i][1])
+                rep_embed = discord.Embed(
+                    title=f"{member}",
+                    description="User report history",
+                    colour=0xFF0000)
+                rep_embed.add_field(name=f"Report reasons - `{rep_count} Reports`", value=f"{str(clean_rows)}", inline=False)
+                await ctx.send(embed=rep_embed)
+                return
         else:
             embed=discord.Embed(title="Permission Denied.", description="You can't see reports of other users", color=0xff0000)
             return await ctx.send(embed=embed)
