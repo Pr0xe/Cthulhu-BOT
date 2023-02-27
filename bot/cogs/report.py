@@ -23,7 +23,7 @@ class Report(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.pg_con.execute("CREATE TABLE IF NOT EXISTS reports (user_id character varying, report TEXT[])")
-        print("report system ready") 
+        print(colored("Report system ready", 'green')) 
 
     async def create_db_pool(self):
         try:

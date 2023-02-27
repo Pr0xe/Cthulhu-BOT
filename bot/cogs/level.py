@@ -10,6 +10,8 @@ from discord import Embed, Member
 import constants
 from discord import app_commands
 
+nest_asyncio.apply()
+
 class Levels(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -18,7 +20,7 @@ class Levels(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.pg_con.execute("CREATE TABLE IF NOT EXISTS levels (user_id character varying, guild_id character varying, level int, xp int)")
-        print("leveling system ready") 
+        print(colored("Leveling system ready", 'green')) 
 
     async def create_db_pool(self):
         try:
@@ -148,5 +150,6 @@ class Levels(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="ERROR", description="Arguments Missing", color=0xff0000)
             await ctx.reply(embed=embed)
+
 async def setup(bot):
     await bot.add_cog(Levels(bot),guilds=[discord.Object(id=constants.SERVER_ID)])
