@@ -127,7 +127,7 @@ class Levels(commands.Cog):
     @app_commands.guilds(constants.SERVER_ID)
     @commands.has_permissions(ban_members=True)
     async def rmlevel(self, ctx, member: discord.Member):
-        log_channel = self.bot.get_channel(900492686581178398)
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         embed = discord.Embed(
                 colour=0xFFA500,
                 timestamp=ctx.message.created_at)
