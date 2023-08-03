@@ -48,15 +48,18 @@ class Levels(commands.Cog):
 
         author_id = str(ctx.author.id)
         guild_id = str(ctx.guild.id)
-
-        user = await self.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
         
-        if not user:
-            await self.pg_con.execute("INSERT INTO levels (user_id, guild_id, level, xp) VALUES ($1, $2, 1, 0)", author_id, guild_id)
+        if ctx.guild.id == constants.SERVER_ID:
+            user = await self.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
+        
+            if not user:
+                await self.pg_con.execute("INSERT INTO levels (user_id, guild_id, level, xp) VALUES ($1, $2, 1, 0)", author_id, guild_id)
 
-        user = await self.pg_con.fetchrow("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
-        await self.pg_con.execute("UPDATE levels SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
-       
+            user = await self.pg_con.fetchrow("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", author_id, guild_id)
+            await self.pg_con.execute("UPDATE levels SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
+        else:
+            return
+        
         if await self.level_up(user):
             if ctx.guild.id == constants.SERVER_ID:
                 channel = self.bot.get_channel(constants.LEVEL_CHANNEL)
@@ -76,7 +79,10 @@ class Levels(commands.Cog):
         member_id = str(member.id)
         guild_id = str(ctx.guild.id)
 
-        user = await self.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", member_id, guild_id)
+        if ctx.guild.id == constants.SERVER_ID:
+            user = await self.pg_con.fetch("SELECT * FROM levels WHERE user_id = $1 AND guild_id = $2", member_id, guild_id)
+        else:
+            return
 
         if not user:
             embed = discord.Embed(
@@ -119,7 +125,8 @@ class Levels(commands.Cog):
             if self.bot.get_user(int(_data[i][0])) == None:
                 none_field = _data[i][0]
                 await self.pg_con.execute("DELETE FROM levels WHERE user_id = $1", none_field)
-        await ctx.reply("Dead members cleared from Database")
+                await self.pg_con.execute("DELETE FROM levels WHERE guild_id <> '$1'", constants.SERVER_ID)
+        await ctx.reply("DataBase Cleared")
     
     @cleardb.error
     async def cleardb_error(self, ctx, error):
