@@ -58,9 +58,13 @@ class Levels(commands.Cog):
         await self.pg_con.execute("UPDATE levels SET xp = $1 WHERE user_id = $2 AND guild_id = $3", user['xp'] + 1, author_id, guild_id)
        
         if await self.level_up(user):
-            channel = self.bot.get_channel(constants.LEVEL_CHANNEL)
-            embed=discord.Embed(title=f":tada: Level Up :tada:", description="**{0}** is level **{1}** :star:".format(ctx.author.mention, user['level'] + 1), color=0x00ffff)
-            await channel.send(embed=embed)
+            if ctx.guild.id == constants.SERVER_ID:
+                channel = self.bot.get_channel(constants.LEVEL_CHANNEL)
+                embed=discord.Embed(title=f":tada: Level Up :tada:", description="**{0}** is level **{1}** :star:".format(ctx.author.mention, user['level'] + 1), color=0x00ffff)
+                await channel.send(embed=embed)
+            else:
+                return
+
         
     @commands.hybrid_command(name="level", with_app_command=True ,description="Display the level of user")
     @app_commands.guilds(constants.SERVER_ID)
@@ -137,7 +141,7 @@ class Levels(commands.Cog):
         else:
             member_id = str(member.id)
             await self.pg_con.execute("DELETE FROM levels WHERE user_id = $1", member_id)
-            embed.add_field(name="Level Message", value=f"{ctx.message.author.mention} removed level from {member}", inline=True)
+            embed.add_field(name="Level Message", value=f"{ctx.message.author.mention} removed level from {member.mention}", inline=True)
             embed.set_footer(text=f"Requested by {ctx.author}")
             await ctx.send(embed=embed)
             await log_channel.send(f"{ctx.message.author.mention} removed level from {member.mention}")
