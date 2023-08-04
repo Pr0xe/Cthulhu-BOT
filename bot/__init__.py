@@ -64,24 +64,30 @@ class Bot(BotBase):
     async def on_member_join(self, member):
         channel = bot.get_channel(constants.WELCOME_CHANNEL)
         log_channel = bot.get_channel(constants.LOG_CHANNEL)
-        user_embed = discord.Embed(
-            colour=(discord.Colour.magenta()),
-            title=':partying_face: Welcome :partying_face:',
-            description=f'{member.mention} Welcome to **{member.guild.name}** Server !!'
-        )
-        await channel.send(embed=user_embed)
-        role = discord.utils.get(member.guild.roles, id=constants.CUSTOM_ON_JOIN_ROLE_ID)
-        await member.add_roles(role)
-        await log_channel.send(f"{member} joined the server")
+        if member.guild.id == constants.SERVER_ID:
+            user_embed = discord.Embed(
+                colour=(discord.Colour.magenta()),
+                title=':partying_face: Welcome :partying_face:',
+                description=f'{member.mention} Welcome to **{member.guild.name}** Server !!'
+            )
+            await channel.send(embed=user_embed)
+            role = discord.utils.get(member.guild.roles, id=constants.CUSTOM_ON_JOIN_ROLE_ID)
+            await member.add_roles(role)
+            await log_channel.send(f"{member} joined the server")
+        else:
+            return
 
     async def on_member_remove(self, member):
         channel = bot.get_channel(constants.BYE_CHANNEL)
-        bye_embed = discord.Embed(
-            color=0x737373,
-            title=':cross: Goodbye :cross:',
-            description=f'{member} has left from the server!!'
-        )
-        await channel.send(embed=bye_embed)
+        if member.guild.id == constants.SERVER_ID:
+            bye_embed = discord.Embed(
+                color=0x737373,
+                title=':cross: Goodbye :cross:',
+                description=f'{member} has left from the server!!'
+            )
+            await channel.send(embed=bye_embed)
+        else:
+            return
 
 bot = Bot()
 
