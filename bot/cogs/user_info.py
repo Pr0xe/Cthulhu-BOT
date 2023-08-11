@@ -35,7 +35,7 @@ class User_info(commands.Cog):
             em_user.add_field(name=name, value=value)
 
         await ctx.send(embed=em_user)
-        await log_channel.send(f"Informations about {member} printed: requested by {ctx.author}")
+        await log_channel.send(f"Informations about {member} printed: requested by {ctx.author.mention}")
 
 async def setup(bot):
     await bot.add_cog(User_info(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

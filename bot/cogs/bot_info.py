@@ -32,7 +32,7 @@ class BotInfo(commands.Cog):
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
         await ctx.send(embed=embed)
-        await log_channel.send(f"BOT Infos printed : requested by {ctx.author}")
+        await log_channel.send(f"BOT Infos printed : requested by {ctx.author.mention}")
     
 async def setup(bot):
     await bot.add_cog(BotInfo(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

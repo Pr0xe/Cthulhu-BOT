@@ -37,7 +37,7 @@ class ServerInfo(commands.Cog):
             embed.add_field(name=name, value=value, inline=inline)
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
-        await log_channel.send(f"Server informations printed : requested by {ctx.author}")
+        await log_channel.send(f"Server informations printed : requested by {ctx.author.mention}")
 
 async def setup(bot):
     await bot.add_cog(ServerInfo(bot),guilds=[discord.Object(id=constants.SERVER_ID)])

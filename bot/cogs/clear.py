@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import constants
 
 class Clear(commands.Cog):
     def __init__(self,bot):
@@ -8,6 +9,7 @@ class Clear(commands.Cog):
     @commands.command(pass_context=True, description="Delete messages equals to give amount")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount:int):
+        log_channel = self.bot.get_channel(constants.LOG_CHANNEL)
         channel = ctx.channel
         if amount < 0:
             await ctx.send("Amount cannot be negative")
@@ -17,6 +19,8 @@ class Clear(commands.Cog):
             await ctx.send(embed=embed)       
         else:
             await channel.purge(limit=amount+1)
+            await log_channel.send(f"User: {ctx.author.mention} deleted {amount} messages from {channel.mention}")
+
         
     @clear.error
     async def clear_error(self, ctx, error):

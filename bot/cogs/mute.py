@@ -47,5 +47,6 @@ class Mute(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             embed=discord.Embed(title="Arguments Missing", description="Specify the user", color=0xff0000)
             await ctx.reply(embed=embed)
+            
 async def setup(bot):
     await bot.add_cog(Mute(bot),guilds=[discord.Object(id=constants.SERVER_ID)])
